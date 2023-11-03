@@ -1,22 +1,26 @@
 name: Build and Deploy
 on:
-  push:	
-    branches:	
+  push:
+    branches:
       - main
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14.x
+
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@v2
       with:
         submodules: true
 
     - name: Build and Deploy
       uses: solybum/hexo-deploy@master
       env:
-        PERSONAL_TOKEN: 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
-        PUBLISH_REPOSITORY: git@github.com:Huang-junsen/Junsen-blog.git # The repository the action should deploy to.
-        BRANCH: blog  # The branch the action should deploy to.
-        PUBLISH_DIR: ./public # The folder the action should deploy.
-
+        PERSONAL_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        PUBLISH_REPOSITORY: https://github.com/Huang-junsen/Junsen-blog.git
+        BRANCH: blog
+        PUBLISH_DIR: ./public

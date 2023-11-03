@@ -58,6 +58,6 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository-name: Huang-junsen/Junsen-blog
-          branch: main
+          branch: blog
           folder: public
           commit-message: "${{ github.event.head_commit.message }} 由Github操作更新"

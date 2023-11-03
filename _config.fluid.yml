@@ -1,0 +1,81 @@
+title: Junsen Blog
+subtitle: 'Junsen 的个人记录'
+description: 'Junsen 的个人记录'
+keywords: 'Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs'
+author: Junsen
+language: zh-CN
+timezone: '+8'
+
+navbar:
+  blog_title: Junsen Blog
+
+index:
+  slogan:
+    enable: true
+    text: '你可以不学习，但你的竞争对手不会！'
+    api:
+      enable: false
+      url: "https://v1.hitokoto.cn/"
+      method: "GET"
+      headers: {}
+      keys: ["hitokoto"]
+
+footer:
+  statistics:
+    enable: false
+    source: "busuanzi"  # 可选 leancloud | busuanzi  根据自己需求选择
+    pv_format: "总访问量 {} 次"  # 显示的文本，{}是数字的占位符（必须包含)，下同
+    uv_format: "总访客数 {} 人"
+
+
+post:
+  meta:
+    author:  # 作者，优先根据 front-matter 里 author 字段，其次是 hexo 配置中 author 值
+      enable: true
+    date:  # 文章日期，优先根据 front-matter 里 date 字段，其次是 md 文件日期
+      enable: true
+      format: "dddd, MMMM Do YYYY, h:mm a"  # 格式参照 ISO-8601 日期格式化
+    wordcount:  # 字数统计
+      enable: true
+      format: "{} 字"  # 显示的文本，{}是数字的占位符（必须包含)，下同
+    min2read:  # 阅读时间
+      enable: true
+      format: "{} 分钟"
+    views:  # 阅读次数
+      enable: true
+      source: "leancloud"  # 统计数据来源，可选：leancloud | busuanzi   注意不蒜子会间歇抽风
+      format: "{} 次"
+  comments:
+    enable: true
+    type: disqus
+
+code:
+  copy_btn: true
+  highlight:
+    enable: true
+    line_number: true
+    lib: "highlightjs"
+    highlightjs:
+      style: 'Github Gist'
+      bg_color: true
+    prismjs:
+      style: "default"
+      preprocess: true
+
+disqus:
+  shortname: fluid
+
+about:
+  avatar: 'https://avatars.githubusercontent.com/u/66542771?v=4'
+  name: "Junsen"
+  intro: "一个专科毕业的前端工程师"
+  comment: bool
+  icons:
+
+tag:
+  tagcloud:
+    min_font: 15
+    max_font: 30
+    unit: px  # 字号单位
+    start_color: "#BBBBEE"
+    end_color: "#337ab7"

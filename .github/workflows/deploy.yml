@@ -12,10 +12,10 @@ jobs:
       with:
         submodules: true
     # 使用action库，安装node
-      - name: use Node.js # 使用action库  actions/setup-node安装node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.17.0 # 指定node版本
+    - name: use Node.js # 使用action库  actions/setup-node安装node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.17.0 # 指定node版本
 
 
     - name: Build and Deploy

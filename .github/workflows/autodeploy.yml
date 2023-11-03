@@ -50,7 +50,7 @@ jobs:
       - name: 生成静态文件
         run: |
           hexo clean
-          hexo bangumi -u #bilibili番剧更新
+          hexo deploy
           hexo generate
 
       - name: 部署到Github

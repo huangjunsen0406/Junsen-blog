@@ -11,6 +11,17 @@ author: Junsen
 language: zh-CN
 timezone: '+8'
 
+index:
+  slogan:
+    enable: true
+    text: 这是一条 Slogan
+    api:
+      enable: false
+      url: "https://v1.hitokoto.cn/"
+      method: "GET"
+      headers: {}
+      keys: ["hitokoto"]
+
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://huang-junsen.github.io/Junsen-blog

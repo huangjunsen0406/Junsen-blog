@@ -4,9 +4,9 @@
 
 # Site
 title: Junsen Blog
-subtitle: ''
-description: ''
-keywords:
+subtitle: 'Junsen 的个人记录'
+description: 'Junsen 的个人记录'
+keywords: 'Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs'
 author: Junsen
 language: zh-CN
 timezone: '+8'

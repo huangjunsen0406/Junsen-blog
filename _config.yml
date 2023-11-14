@@ -71,7 +71,7 @@ prismjs:
 # path: Root path for your blogs index page. (default = '')
 # per_page: Posts displayed per page. (0 = disable pagination)
 # order_by: Posts order. (Order by date descending by default)
-root: '/Junsen-blog/'
+root: '/'
 index_generator:
   path: ''
   per_page: 10

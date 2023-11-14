@@ -75,7 +75,7 @@ root: '/'
 index_generator:
   path: ''
   per_page: 10
-  order_by: date
+  order_by: -date
 
 # Category & Tag
 default_category: uncategorized
@@ -125,11 +125,12 @@ footer:
     uv_format: "总访客数 {} 人"
   content: '
     <div class="footer-content">
-       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo1</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
     </div>
   '
   beian: 
     enable: true
     icp_text: '粤ICP备2023129632号-1'
+    police_text: 
     police_code: https://beian.miit.gov.cn
     police_icon: /img/police_beian.png

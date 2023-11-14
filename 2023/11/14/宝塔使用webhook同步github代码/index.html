@@ -16,22 +16,24 @@
   <meta name="author" content="Junsen">
   <meta name="keywords" content="Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs">
   
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+    <meta name="description" content="宝塔使用webhook同步github代码 服务器设置git 先去 服务器上设置github用户名、邮箱、密码  然后获取rsa密钥用于代码拉取 12345678git config --global user.name &quot;xxx&quot;git config --global user.email &quot;xxx@qq.com&quot;git config --global u">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://junsen.online/2023/11/14/hello-world/index.html">
+<meta property="og:title" content="宝塔使用webhook同步github代码">
+<meta property="og:url" content="https://junsen.online/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/index.html">
 <meta property="og:site_name" content="Junsen Blog">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="宝塔使用webhook同步github代码 服务器设置git 先去 服务器上设置github用户名、邮箱、密码  然后获取rsa密钥用于代码拉取 12345678git config --global user.name &quot;xxx&quot;git config --global user.email &quot;xxx@qq.com&quot;git config --global u">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-11-14T10:19:17.394Z">
+<meta property="og:image" content="https://tuchuang.junsen.online//i/2023/11/14/t3fuv6-1.jpg">
+<meta property="article:published_time" content="2023-11-14T10:19:17.398Z">
 <meta property="article:modified_time" content="2023-11-14T10:19:17.398Z">
 <meta property="article:author" content="Junsen">
-<meta property="article:tag" content="Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs">
+<meta property="article:tag" content="自动化">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tuchuang.junsen.online//i/2023/11/14/t3fuv6-1.jpg">
   
   
   
-  <title>Hello World - Junsen Blog</title>
+  <title>宝塔使用webhook同步github代码 - Junsen Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Hello World"></span>
+            <span id="subtitle" data-typed-text="宝塔使用webhook同步github代码"></span>
           
         </div>
 
@@ -226,7 +228,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          367 字
+          1k 字
         
       </span>
     
@@ -238,7 +240,7 @@
         
         
           <!-- compatible with older versions-->
-          4 分钟
+          9 分钟
         
       </span>
     
@@ -283,24 +285,32 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hello World</h1>
+            <h1 id="seo-header">宝塔使用webhook同步github代码</h1>
             
             
               <div class="markdown-body">
                 
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure>
+                <p>宝塔使用webhook同步github代码</p>
+<h3 id="服务器设置git"><a href="#服务器设置git" class="headerlink" title="服务器设置git"></a>服务器设置git</h3><ul>
+<li><p>先去 服务器上设置github用户名、邮箱、密码</p>
+</li>
+<li><p>然后获取rsa密钥用于代码拉取</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git config --global user.name <span class="hljs-string">&quot;xxx&quot;</span><br>git config --global user.email <span class="hljs-string">&quot;xxx@qq.com&quot;</span><br>git config --global user.password <span class="hljs-string">&quot;xxx&quot;</span><br><br><span class="hljs-comment">#生成公钥</span><br>ssh-keygen -t rsa<br><span class="hljs-comment">#获取公钥</span><br><span class="hljs-built_in">cat</span> ~/.ssh/id_rsa.pub<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="宝塔软件商店搜索-webhook"><a href="#宝塔软件商店搜索-webhook" class="headerlink" title="宝塔软件商店搜索 webhook"></a>宝塔软件商店搜索 webhook</h2><p><img src="https://tuchuang.junsen.online//i/2023/11/14/stzy0l-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114174342741"></p>
+<ul>
+<li>点击设置添加hook，名称随便填，脚本复制以下的改下仓库地址和部署目录</li>
+<li><strong>注意点：</strong> 仓库的代码需要是编译后的代码。可以利用git action自动编译</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-comment">#输出当前时间</span><br><span class="hljs-built_in">date</span> --<span class="hljs-built_in">date</span>=<span class="hljs-string">&#x27;0 days ago&#x27;</span> <span class="hljs-string">&quot;+%Y-%m-%d %H:%M:%S&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Start&quot;</span><br><span class="hljs-comment">#git项目路径</span><br>gitPath=<span class="hljs-string">&quot;/www/wwwroot/部署文件夹&quot;</span><br><span class="hljs-comment">#git 网址</span><br>gitHttp=<span class="hljs-string">&quot;仓库地址&quot;</span><br> <br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Web站点路径：<span class="hljs-variable">$gitPath</span>&quot;</span><br> <br><span class="hljs-comment">#判断项目路径是否存在</span><br><span class="hljs-keyword">if</span> [ -d <span class="hljs-string">&quot;<span class="hljs-variable">$gitPath</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">cd</span> <span class="hljs-variable">$gitPath</span><br>        <span class="hljs-comment">#判断是否存在git目录</span><br>        <span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;.git&quot;</span> ]; <span class="hljs-keyword">then</span><br>                <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;在该目录下克隆 git&quot;</span><br>                <span class="hljs-built_in">cd</span> ..<br>                git <span class="hljs-built_in">clone</span> <span class="hljs-variable">$gitHttp</span> <br>                <span class="hljs-comment"># mv gittemp/.git .</span><br>                <span class="hljs-comment"># rm -rf gittemp </span><br>                <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;End&quot;</span><br>        <span class="hljs-keyword">else</span>  <br>              <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;在该目录下拉取 git&quot;</span><br>              git pull 2&gt;&amp;1<br>              <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;End&quot;</span><br>        <span class="hljs-keyword">fi</span><br>        <span class="hljs-built_in">exit</span><br><span class="hljs-keyword">else</span><br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;该项目路径不存在&quot;</span><br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;End&quot;</span><br>        <span class="hljs-built_in">exit</span><br><span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<ul>
+<li><p>获取添加后的 hook地址去github仓库里的设置点击webhook添加宝塔生成的hook地址，填完后点击add webhook即可，第一次需要点击下宝塔webhook的测试按钮</p>
+<p><img src="https://tuchuang.junsen.online//i/2023/11/14/t01js2-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114175358845"></p>
+</li>
+</ul>
+<p><img src="https://tuchuang.junsen.online//i/2023/11/14/t0yp1j-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114175513385"></p>
+<p><img src="https://tuchuang.junsen.online//i/2023/11/14/t111g1-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114175524611"></p>
 
                 
               </div>
@@ -310,6 +320,13 @@
               <div class="post-metas my-3">
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
+      
+    </div>
+  
 </div>
 
 
@@ -318,8 +335,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hello World</div>
-      <div>https://junsen.online/2023/11/14/hello-world/</div>
+      <div>宝塔使用webhook同步github代码</div>
+      <div>https://junsen.online/2023/11/14/宝塔使用webhook同步github代码/</div>
     </div>
     <div class="license-meta">
       
@@ -363,15 +380,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/" title="宝塔使用webhook同步github代码">
+                      <a href="/2023/11/14/%E4%B9%85%E8%BF%9D%E7%9A%84%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/" title="久违的博客记录">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">宝塔使用webhook同步github代码</span>
+                        <span class="hidden-mobile">久违的博客记录</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2023/11/14/hello-world/" title="Hello World">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
@@ -388,8 +411,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://junsen.online/2023/11/14/hello-world/';
-          this.page.identifier = '/2023/11/14/hello-world/';
+          this.page.url = 'https://junsen.online/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/';
+          this.page.identifier = '/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

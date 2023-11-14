@@ -1,5 +1,6 @@
 ---
 title: 宝塔使用webhook同步github代码
+categories: ['自动化']
 tags: ['自动化']
 index_img: 'https://tuchuang.junsen.online//i/2023/11/14/t3fuv6-1.jpg'
 banner_img: 'https://tuchuang.junsen.online//i/2023/11/14/t3fuv6-1.jpg'

@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>git配置</title>
+    <link href="/2023/11/15/git%E9%85%8D%E7%BD%AE/"/>
+    <url>/2023/11/15/git%E9%85%8D%E7%BD%AE/</url>
+    
+    <content type="html"><![CDATA[<h1 id="新环境配置git多配置"><a href="#新环境配置git多配置" class="headerlink" title="新环境配置git多配置"></a>新环境配置git多配置</h1><h2 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h2><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arcade">ssh-keygen -t rsa -C <span class="hljs-string">&#x27;xxx@qq.com&#x27;</span> -f ~<span class="hljs-regexp">/.ssh/gi</span>tee_id_rsa<br>ssh-keygen -t rsa -C <span class="hljs-string">&#x27;xxx@qq.com&#x27;</span> -f ~<span class="hljs-regexp">/.ssh/gi</span>thub_id_rsa<br>ssh-keygen -t rsa -C <span class="hljs-string">&#x27;xxx@qq.com&#x27;</span> -f ~<span class="hljs-regexp">/.ssh/gi</span>tlab_id_rsa<br></code></pre></td></tr></table></figure><h2 id="config配置"><a href="#config配置" class="headerlink" title="config配置"></a>config配置</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment"># gitee</span><br>Host gitee.com<br>HostName gitee.com<br>PreferredAuthentications publickey<br>IdentityFile ~<span class="hljs-regexp">/.ssh/gi</span>tee_id_rsa<br><span class="hljs-comment"># github</span><br>Host github.com<br>HostName github.com<br>PreferredAuthentications publickey<br>IdentityFile ~<span class="hljs-regexp">/.ssh/gi</span>thub_id_rsa<br><span class="hljs-comment"># 璟胜gitlab</span><br>Host gitlab.xxx.com<br>HostName gitlab.xxx.com<br>PreferredAuthentications publickey<br>IdentityFile ~<span class="hljs-regexp">/.ssh/gi</span>thlab_id_rsa<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>环境配置</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>环境配置</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>宝塔使用webhook同步github代码</title>
     <link href="/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/"/>
     <url>/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/</url>

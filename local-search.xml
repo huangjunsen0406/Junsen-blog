@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>使用picgo配合easyImage搭建富文本粘贴自动上传</title>
+    <link href="/2023/11/16/2023-11-16-%E4%BD%BF%E7%94%A8picgo%E9%85%8D%E5%90%88easyImage%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%B2%98%E8%B4%B4%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0/"/>
+    <url>/2023/11/16/2023-11-16-%E4%BD%BF%E7%94%A8picgo%E9%85%8D%E5%90%88easyImage%E6%90%AD%E5%BB%BA%E5%AF%8C%E6%96%87%E6%9C%AC%E7%B2%98%E8%B4%B4%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="使用picgo配合easyImage搭建富文本粘贴自动上传"><a href="#使用picgo配合easyImage搭建富文本粘贴自动上传" class="headerlink" title="使用picgo配合easyImage搭建富文本粘贴自动上传"></a>使用picgo配合easyImage搭建富文本粘贴自动上传</h1><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada"><span class="hljs-keyword">body</span>：&#123;<span class="hljs-string">&quot;token&quot;</span>:<span class="hljs-string">&quot;你的简单图床apitoken&quot;</span>&#125;<br></code></pre></td></tr></table></figure><p><img src="https://tuchuang.junsen.online//i/2023/11/16/iw82mw-1.png" alt="image-20231116114250759"></p><p>然后去typora 设置图片上传配置选择picgoapp</p><p><img src="https://tuchuang.junsen.online//i/2023/11/16/j03nxl-1.png" alt="image-20231116114902405"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>自动化</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>自动化</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>git配置</title>
     <link href="/2023/11/15/git%E9%85%8D%E7%BD%AE/"/>
     <url>/2023/11/15/git%E9%85%8D%E7%BD%AE/</url>

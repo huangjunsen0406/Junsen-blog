@@ -1,7 +1,9 @@
+---
 title: vue3-ts-vite集成electron记录
 categories: ['前端笔记']
 tags: ['前端笔记']
-date: 2023-11-26 22:29:00
+date: 2023-11-26 22:33:00
+---
 
 # vue3-ts-vite集成electron记录
 
@@ -378,6 +380,119 @@ date: 2023-11-26 22:29:00
     ```
 
 
+
+	## vite.config.ts
+
+- 引入我们编写的vite插件并注册
+
+```ts
+import { fileURLToPath, URL } from 'node:url'
+import UnoCSS from 'unocss/vite'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { ElectronDevPlugin } from './electron/plugins/vite-electron-dev'
+import { ElectronBuildPlugin } from './electron/plugins/vite-electron-build'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+    envPrefix: 'APPLET_',
+    plugins: [vue(), UnoCSS(), ElectronDevPlugin(), ElectronBuildPlugin()],
+    base: './',
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
+    },
+    server: {
+        proxy: {
+            // 跨域代理
+            '/apis': {
+                target: 'http://' + env.VUE_APP_BASE_API,
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/apis/, '')
+            }
+            // 代理 WebSocket 或 socket
+            // '/socket.io': {
+            //   target: 'ws://localhost:3000',
+            //   ws: true
+            //  }
+        }
+    }
+})
+
+```
+
+
+
+## preload注入后无法在web层获取相关变量
+
+- 需要在scr下新建global.d.ts，并且在tsconfig.app.json里面引入
+
+  ```ts
+  import type { Method, ResponseType } from 'axios'
+  
+  export {}
+  declare global {
+      interface Window {
+          // 这里新增preload里面的注入变量，防止window.versions报错
+          electronAPI?: any //全局变量名
+          versions?: any //
+      }
+      interface AxiosConfig {
+          params?: any
+          data?: any
+          url?: string
+          method?: Method
+          headersType?: string
+          responseType?: ResponseType
+      }
+  
+      interface IResponse<T = any> {
+          code: string
+          data: T extends any ? T : T & any
+      }
+      type AxiosHeaders =
+          | 'application/json'
+          | 'application/x-www-form-urlencoded'
+          | 'multipart/form-data'
+  }
+  declare const window: any
+  
+  ```
+
+  - tsconfig.app.json
+
+    ```json
+    {
+      "extends": "@vue/tsconfig/tsconfig.dom.json",
+      // "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+      "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "electron/**/*.ts"],
+      "exclude": ["src/**/__tests__/*"],
+      "compilerOptions": {
+        "composite": true,
+        "baseUrl": "./",
+        "paths": {
+          "@/*": ["./src/*"]
+        },
+        "types": ["three"]
+      }
+    }
+    
+    ```
+
+    
+
+
+
+## 打包注意点
+
+- 需要在根目录新建 .npmrc文件把下面的三行复制进去，这样打包才不会报错
+
+```js
+ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+registry=https://registry.npm.taobao.org/
+electron_builder_binaries_mirror=https://npm.taobao.org/mirrors/electron-builder-binaries/
+```
 
 
 

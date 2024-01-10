@@ -27,21 +27,17 @@ date: 2024-01-10 17:20:00
 import { ref, onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import { vertexShader } from '@/views/FaceDetail/shader';
 
-let FaceModelOne: any;
 const container = ref();
 let camera: any;
 let controls: any;
+let cube: any;
 const init = () => {
   // 初始化场景
   const scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer();
-  const objLoader = new OBJLoader();
   camera.position.z = 5;
-  const textureLoader = new THREE.TextureLoader();
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.value.appendChild(renderer.domElement);
 
@@ -56,40 +52,11 @@ const init = () => {
   //   const gridHelper = new THREE.GridHelper(300, 25, 0x004444, 0x004444);
 
   //   scene.add(gridHelper);
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
 
-  objLoader.load(
-    'http://192.168.88.21:9000/mry/Rgb.obj',
-    (obj: THREE.Group<THREE.Object3DEventMap>) => {
-      FaceModelOne = obj;
-      FaceModelOne.children[0].material = new THREE.ShaderMaterial({
-        // map: textureLoader.load('http://192.168.88.21:9000/mry/Rgb.jpg')
-        uniforms: {
-          map: { value: textureLoader.load('http://192.168.88.21:9000/mry/Rgb.jpg') },
-        },
-        vertexShader,
-        fragmentShader: `
-            uniform sampler2D map;
-            varying vec2 vUv;
-            varying vec3 vPos;
-            void main() {
-                vec4 map = texture2D(map, vUv);
-                // // 根据UV坐标的横向位置选择左右贴图的颜色
-                gl_FragColor = map;
-            }
-    `,
-      });
-      FaceModelOne.scale.set(-10, 10, 10);
-      FaceModelOne.position.y = 0.2;
-      FaceModelOne.name = 'faceModel';
-      scene.add(FaceModelOne);
-    },
-    (xhr) => {
-      console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
-    },
-    function (e: any) {
-      console.error(e);
-    },
-  );
   // 初始化控制参数
   const state = {
     isLongPressing: false,
@@ -138,8 +105,8 @@ const init = () => {
       };
       // 获取关联的 DOM 元素
       const element = renderer.domElement;
-      FaceModelOne.rotation.x += (2 * Math.PI * deltaMove.y) / element.clientHeight;
-      FaceModelOne.rotation.y += (2 * Math.PI * deltaMove.x) / element.clientWidth;
+      cube.rotation.x += (2 * Math.PI * deltaMove.y) / element.clientHeight;
+      cube.rotation.y += (2 * Math.PI * deltaMove.x) / element.clientWidth;
       // 更新鼠标位置
       state.previousMousePosition = {
         x: event.pageX,
@@ -151,7 +118,7 @@ const init = () => {
   const handleWheel = (event: WheelEvent) => {
     // 根据滚轮滚动的差值进行缩放
     const scaleFactor = event.deltaY > 0 ? 0.9 : 1.1;
-    FaceModelOne.scale.multiplyScalar(scaleFactor);
+    cube.scale.multiplyScalar(scaleFactor);
   };
 
   // 渲染循环
@@ -179,27 +146,27 @@ const test = (degToRad: string) => {
     // 0°旋转的情况
     case '0°':
       // 设置左右两个相机的旋转
-      FaceModelOne.rotation.set(0, THREE.MathUtils.degToRad(0), 0);
+      cube.rotation.set(0, THREE.MathUtils.degToRad(0), 0);
       break;
 
     // +45°旋转的情况
     case 'R45°':
-      FaceModelOne.rotation.set(0, THREE.MathUtils.degToRad(45), 0);
+      cube.rotation.set(0, THREE.MathUtils.degToRad(45), 0);
       break;
 
     // -45°旋转的情况
     case 'L45°':
-      FaceModelOne.rotation.set(0, -THREE.MathUtils.degToRad(45), 0);
+      cube.rotation.set(0, -THREE.MathUtils.degToRad(45), 0);
       break;
 
     // +90°旋转的情况
     case 'R90°':
-      FaceModelOne.rotation.set(0, THREE.MathUtils.degToRad(90), 0);
+      cube.rotation.set(0, THREE.MathUtils.degToRad(90), 0);
       break;
 
     // -90°旋转的情况
     case 'L90°':
-      FaceModelOne.rotation.set(0, -THREE.MathUtils.degToRad(90), 0);
+      cube.rotation.set(0, -THREE.MathUtils.degToRad(90), 0);
       break;
   }
   // 设置轨道控制器的目标点（target）为初始位置
@@ -219,6 +186,7 @@ onMounted(() => {
   init();
 });
 </script>
+
 
 ```
 

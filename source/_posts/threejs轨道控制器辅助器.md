@@ -1,6 +1,6 @@
 ---
 title: threejs轨道控制器辅助器
-categories: ['web3d','threejs','webgl']
+categories: ['threejs']
 tags: ['web3d','threejs','webgl']
 date: 2024-01-10 17:20:00
 ---

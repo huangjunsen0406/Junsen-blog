@@ -1,0 +1,753 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Junsen">
+  <meta name="keywords" content="Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs">
+  
+    <meta name="description" content="threejs轨道控制器辅助器 OrbitControlsHelper 由来，由于项目需要threejs默认的轨道控制器无法以模型为中心上下左右旋转，而是以修改相机视角达到视角旋转的效果当通过鼠标右键移动控制器后，相机的旋转会以世界中心旋转。 OrbitControlsHelper 可以把旋转中心从世界中心坐标改为模型中心旋转，可以参考下面的代码去理解。最后的是抽取成辅助类形式去调用  12345">
+<meta property="og:type" content="article">
+<meta property="og:title" content="threejs轨道控制器辅助器">
+<meta property="og:url" content="https://junsen.online/2024/01/10/threejs%E8%BD%A8%E9%81%93%E6%8E%A7%E5%88%B6%E5%99%A8%E8%BE%85%E5%8A%A9%E5%99%A8/index.html">
+<meta property="og:site_name" content="Junsen Blog">
+<meta property="og:description" content="threejs轨道控制器辅助器 OrbitControlsHelper 由来，由于项目需要threejs默认的轨道控制器无法以模型为中心上下左右旋转，而是以修改相机视角达到视角旋转的效果当通过鼠标右键移动控制器后，相机的旋转会以世界中心旋转。 OrbitControlsHelper 可以把旋转中心从世界中心坐标改为模型中心旋转，可以参考下面的代码去理解。最后的是抽取成辅助类形式去调用  12345">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-10T09:20:00.000Z">
+<meta property="article:modified_time" content="2024-01-10T09:30:30.213Z">
+<meta property="article:author" content="Junsen">
+<meta property="article:tag" content="web3d">
+<meta property="article:tag" content="threejs">
+<meta property="article:tag" content="webgl">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>threejs轨道控制器辅助器 - Junsen Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"junsen.online","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Junsen Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="threejs轨道控制器辅助器"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Junsen
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-10 17:20" pubdate>
+          星期三, 一月 10日 2024, 5:20 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          9.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          81 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">threejs轨道控制器辅助器</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="threejs轨道控制器辅助器"><a href="#threejs轨道控制器辅助器" class="headerlink" title="threejs轨道控制器辅助器"></a>threejs轨道控制器辅助器</h1><blockquote>
+<p>OrbitControlsHelper 由来，由于项目需要threejs默认的轨道控制器无法以模型为中心上下左右旋转，而是以修改相机视角达到视角旋转的效果当通过鼠标右键移动控制器后，相机的旋转会以世界中心旋转。</p>
+<p>OrbitControlsHelper 可以把旋转中心从世界中心坐标改为模型中心旋转，可以参考下面的代码去理解。最后的是抽取成辅助类形式去调用</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br></pre></td><td class="code"><pre><code class="hljs vue">&lt;template&gt;<br>  &lt;div ref=&quot;container&quot;&gt;<br>    &lt;!-- &lt;canvas ref=&quot;canvas&quot;&gt;&lt;/canvas&gt; --&gt;<br>    &lt;button @click=&quot;test(&#x27;0°&#x27;)&quot;&gt;回正&lt;/button&gt;<br>    &lt;button @click=&quot;test(&#x27;R45°&#x27;)&quot;&gt;R45°&lt;/button&gt;<br>    &lt;button @click=&quot;test(&#x27;L45°&#x27;)&quot;&gt;L45°&lt;/button&gt;<br>    &lt;button @click=&quot;test(&#x27;R90°&#x27;)&quot;&gt;R90°&lt;/button&gt;<br>    &lt;button @click=&quot;test(&#x27;L90°&#x27;)&quot;&gt;L90°&lt;/button&gt;<br>  &lt;/div&gt;<br>&lt;/template&gt;<br><br>&lt;script setup lang=&quot;ts&quot;&gt;<br>import &#123; ref, onMounted &#125; from &#x27;vue&#x27;;<br>import * as THREE from &#x27;three&#x27;;<br>import &#123; OrbitControls &#125; from &#x27;three/addons/controls/OrbitControls.js&#x27;;<br>import &#123; OBJLoader &#125; from &#x27;three/examples/jsm/loaders/OBJLoader.js&#x27;;<br>import &#123; vertexShader &#125; from &#x27;@/views/FaceDetail/shader&#x27;;<br><br>let FaceModelOne: any;<br>const container = ref();<br>let camera: any;<br>let controls: any;<br>const init = () =&gt; &#123;<br>  // 初始化场景<br>  const scene = new THREE.Scene();<br>  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);<br>  const renderer = new THREE.WebGLRenderer();<br>  const objLoader = new OBJLoader();<br>  camera.position.z = 5;<br>  const textureLoader = new THREE.TextureLoader();<br>  renderer.setSize(window.innerWidth, window.innerHeight);<br>  container.value.appendChild(renderer.domElement);<br><br>  controls = new OrbitControls(camera, renderer.domElement);<br>  controls.enableRotate = false;<br>  controls.enableZoom = false;<br>  // 如果OrbitControls改变了相机参数，重新调用渲染器渲染三维场景<br>  controls.addEventListener(&#x27;change&#x27;, function () &#123;<br>    renderer.render(scene, camera); // 执行渲染操作<br>  &#125;); // 监听鼠标、键盘事件<br><br>  //   const gridHelper = new THREE.GridHelper(300, 25, 0x004444, 0x004444);<br><br>  //   scene.add(gridHelper);<br><br>  objLoader.load(<br>    &#x27;http://192.168.88.21:9000/mry/Rgb.obj&#x27;,<br>    (obj: THREE.Group&lt;THREE.Object3DEventMap&gt;) =&gt; &#123;<br>      FaceModelOne = obj;<br>      FaceModelOne.children[0].material = new THREE.ShaderMaterial(&#123;<br>        // map: textureLoader.load(&#x27;http://192.168.88.21:9000/mry/Rgb.jpg&#x27;)<br>        uniforms: &#123;<br>          map: &#123; value: textureLoader.load(&#x27;http://192.168.88.21:9000/mry/Rgb.jpg&#x27;) &#125;,<br>        &#125;,<br>        vertexShader,<br>        fragmentShader: `<br>            uniform sampler2D map;<br>            varying vec2 vUv;<br>            varying vec3 vPos;<br>            void main() &#123;<br>                vec4 map = texture2D(map, vUv);<br>                // // 根据UV坐标的横向位置选择左右贴图的颜色<br>                gl_FragColor = map;<br>            &#125;<br>    `,<br>      &#125;);<br>      FaceModelOne.scale.set(-10, 10, 10);<br>      FaceModelOne.position.y = 0.2;<br>      FaceModelOne.name = &#x27;faceModel&#x27;;<br>      scene.add(FaceModelOne);<br>    &#125;,<br>    (xhr) =&gt; &#123;<br>      console.log(`$&#123;(xhr.loaded / xhr.total) * 100&#125;% loaded`);<br>    &#125;,<br>    function (e: any) &#123;<br>      console.error(e);<br>    &#125;,<br>  );<br>  // 初始化控制参数<br>  const state = &#123;<br>    isLongPressing: false,<br>    longPressThreshold: 100, // 长按阈值，单位为毫秒<br>    pressStartTime: 0,<br>    previousMousePosition: &#123;<br>      x: 0,<br>      y: 0,<br>    &#125;,<br>    longPressTimer: undefined, // 用于存储定时器的ID<br>  &#125;;<br><br>  // 鼠标按下事件<br>  const handleMouseDown = (event: MouseEvent) =&gt; &#123;<br>    if (event.button === 0) &#123;<br>      // 检查左键<br>      state.pressStartTime = Date.now();<br>      state.isLongPressing = false;<br>      state.previousMousePosition.x = event.clientX;<br>      state.previousMousePosition.y = event.clientY;<br>      state.longPressTimer = setTimeout(checkLongPress, state.longPressThreshold) as unknown as any;<br>    &#125;<br>  &#125;;<br><br>  // 鼠标松开事件<br>  const handleMouseUp = () =&gt; &#123;<br>    state.isLongPressing = false;<br>    clearTimeout(state.longPressTimer);<br>  &#125;;<br>  // 检查长按<br>  function checkLongPress() &#123;<br>    const currentTime = Date.now();<br>    if (currentTime - state.pressStartTime &gt;= state.longPressThreshold) &#123;<br>      // 左键长按的处理代码<br>      state.isLongPressing = true;<br>      console.log(&#x27;左键长按&#x27;);<br>    &#125;<br>  &#125;<br>  // 鼠标移动事件<br>  const handleMouseMove = (event: MouseEvent) =&gt; &#123;<br>    if (state.isLongPressing) &#123;<br>      // 在长按状态下的鼠标移动处理代码<br>      const deltaMove = &#123;<br>        x: event.pageX - state.previousMousePosition.x,<br>        y: event.pageY - state.previousMousePosition.y,<br>      &#125;;<br>      // 获取关联的 DOM 元素<br>      const element = renderer.domElement;<br>      FaceModelOne.rotation.x += (2 * Math.PI * deltaMove.y) / element.clientHeight;<br>      FaceModelOne.rotation.y += (2 * Math.PI * deltaMove.x) / element.clientWidth;<br>      // 更新鼠标位置<br>      state.previousMousePosition = &#123;<br>        x: event.pageX,<br>        y: event.pageY,<br>      &#125;;<br>    &#125;<br>  &#125;;<br>  // 滚轮事件<br>  const handleWheel = (event: WheelEvent) =&gt; &#123;<br>    // 根据滚轮滚动的差值进行缩放<br>    const scaleFactor = event.deltaY &gt; 0 ? 0.9 : 1.1;<br>    FaceModelOne.scale.multiplyScalar(scaleFactor);<br>  &#125;;<br><br>  // 渲染循环<br>  const animate = () =&gt; &#123;<br>    requestAnimationFrame(animate);<br>    renderer.render(scene, camera);<br>  &#125;;<br><br>  // 初始化相机位置<br>  camera.position.z = 5;<br><br>  // 启动渲染循环<br>  animate();<br><br>  document.addEventListener(&#x27;mousedown&#x27;, handleMouseDown);<br>  document.addEventListener(&#x27;mouseup&#x27;, handleMouseUp);<br>  document.addEventListener(&#x27;mousemove&#x27;, handleMouseMove);<br>  document.addEventListener(&#x27;wheel&#x27;, handleWheel);<br>&#125;;<br><br>const test = (degToRad: string) =&gt; &#123;<br>  console.log(controls);<br><br>  switch (degToRad) &#123;<br>    // 0°旋转的情况<br>    case &#x27;0°&#x27;:<br>      // 设置左右两个相机的旋转<br>      FaceModelOne.rotation.set(0, THREE.MathUtils.degToRad(0), 0);<br>      break;<br><br>    // +45°旋转的情况<br>    case &#x27;R45°&#x27;:<br>      FaceModelOne.rotation.set(0, THREE.MathUtils.degToRad(45), 0);<br>      break;<br><br>    // -45°旋转的情况<br>    case &#x27;L45°&#x27;:<br>      FaceModelOne.rotation.set(0, -THREE.MathUtils.degToRad(45), 0);<br>      break;<br><br>    // +90°旋转的情况<br>    case &#x27;R90°&#x27;:<br>      FaceModelOne.rotation.set(0, THREE.MathUtils.degToRad(90), 0);<br>      break;<br><br>    // -90°旋转的情况<br>    case &#x27;L90°&#x27;:<br>      FaceModelOne.rotation.set(0, -THREE.MathUtils.degToRad(90), 0);<br>      break;<br>  &#125;<br>  // 设置轨道控制器的目标点（target）为初始位置<br>  controls.target.set(0, 0, 0);<br><br>  // 设置相机的位置为默认位置<br>  camera.position.set(0, 0, 5); // 你可能需要根据实际情况调整 Z 轴的值<br><br>  // 使相机重新对准目标点<br>  controls.update();<br><br>  console.log(controls);<br>&#125;;<br><br>// 注册事件监听器<br>onMounted(() =&gt; &#123;<br>  init();<br>&#125;);<br>&lt;/script&gt;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="抽取后的代码"><a href="#抽取后的代码" class="headerlink" title="抽取后的代码"></a>抽取后的代码</h2><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// eslint-disable-next-line filename-rules/match</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrbitControlsHelper</span> &#123;<br>  state = &#123;<br>    <span class="hljs-attr">isLongPressing</span>: <span class="hljs-literal">false</span>,<br>    <span class="hljs-attr">longPressThreshold</span>: <span class="hljs-number">100</span>, <span class="hljs-comment">// 长按阈值，单位为毫秒</span><br>    <span class="hljs-attr">pressStartTime</span>: <span class="hljs-number">0</span>,<br>    <span class="hljs-attr">previousMousePosition</span>: &#123;<br>      <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>,<br>      <span class="hljs-attr">y</span>: <span class="hljs-number">0</span>,<br>    &#125;,<br>    <span class="hljs-attr">longPressTimer</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-comment">// 用于存储定时器的ID,</span><br>    <span class="hljs-comment">// element: HTMLCanvasElement</span><br>  &#125;;<br><br>  <span class="hljs-attr">models</span>: <span class="hljs-variable constant_">THREE</span>.<span class="hljs-property">Group</span>&lt;<span class="hljs-variable constant_">THREE</span>.<span class="hljs-property">Object3DEventMap</span>&gt;[] = [];<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> element: HTMLCanvasElement</span>) &#123;&#125;<br><br>  checkLongPress = <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> currentTime = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();<br>    <span class="hljs-keyword">if</span> (currentTime - <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">pressStartTime</span> &gt;= <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">longPressThreshold</span>) &#123;<br>      <span class="hljs-comment">// 左键长按的处理代码</span><br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">isLongPressing</span> = <span class="hljs-literal">true</span>;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;左键长按&#x27;</span>);<br>    &#125;<br>  &#125;;<br><br>  handleMouseUp = <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">isLongPressing</span> = <span class="hljs-literal">false</span>;<br>    <span class="hljs-built_in">clearTimeout</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">longPressTimer</span>);<br>  &#125;;<br><br>  handleMouseDown = <span class="hljs-function">(<span class="hljs-params">event: MouseEvent</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">if</span> (event.<span class="hljs-property">button</span> === <span class="hljs-number">0</span>) &#123;<br>      <span class="hljs-comment">// 检查左键</span><br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">pressStartTime</span> = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">isLongPressing</span> = <span class="hljs-literal">false</span>;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">previousMousePosition</span>.<span class="hljs-property">x</span> = event.<span class="hljs-property">clientX</span>;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">previousMousePosition</span>.<span class="hljs-property">y</span> = event.<span class="hljs-property">clientY</span>;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">longPressTimer</span> = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">checkLongPress</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">longPressThreshold</span>) <span class="hljs-keyword">as</span> <span class="hljs-built_in">unknown</span> <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>;<br>    &#125;<br>  &#125;;<br><br>  handleMouseMove = <span class="hljs-function">(<span class="hljs-params">event: MouseEvent</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">isLongPressing</span>) &#123;<br>      <span class="hljs-comment">// 在长按状态下的鼠标移动处理代码</span><br>      <span class="hljs-keyword">const</span> deltaMove = &#123;<br>        <span class="hljs-attr">x</span>: event.<span class="hljs-property">pageX</span> - <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">previousMousePosition</span>.<span class="hljs-property">x</span>,<br>        <span class="hljs-attr">y</span>: event.<span class="hljs-property">pageY</span> - <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">previousMousePosition</span>.<span class="hljs-property">y</span>,<br>      &#125;;<br>      <span class="hljs-comment">// 获取关联的 DOM 元素</span><br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">models</span>.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">model</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">if</span> (model) &#123;<br>          model.<span class="hljs-property">rotation</span>.<span class="hljs-property">x</span> += (<span class="hljs-number">2</span> * <span class="hljs-title class_">Math</span>.<span class="hljs-property">PI</span> * deltaMove.<span class="hljs-property">y</span>) / <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-property">clientHeight</span>;<br>          model.<span class="hljs-property">rotation</span>.<span class="hljs-property">y</span> += (<span class="hljs-number">2</span> * <span class="hljs-title class_">Math</span>.<span class="hljs-property">PI</span> * deltaMove.<span class="hljs-property">x</span>) / <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-property">clientWidth</span>;<br>        &#125;<br>      &#125;);<br>      <span class="hljs-comment">// 更新鼠标位置</span><br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">previousMousePosition</span> = &#123;<br>        <span class="hljs-attr">x</span>: event.<span class="hljs-property">pageX</span>,<br>        <span class="hljs-attr">y</span>: event.<span class="hljs-property">pageY</span>,<br>      &#125;;<br>    &#125;<br>  &#125;;<br><br>  handleWheel = <span class="hljs-function">(<span class="hljs-params">event: WheelEvent</span>) =&gt;</span> &#123;<br>    <span class="hljs-comment">// 根据滚轮滚动的差值进行缩放</span><br>    <span class="hljs-keyword">const</span> scaleFactor = event.<span class="hljs-property">deltaY</span> &gt; <span class="hljs-number">0</span> ? <span class="hljs-number">0.9</span> : <span class="hljs-number">1.1</span>;<br><br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">models</span>.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">model</span>) =&gt;</span> &#123;<br>      <span class="hljs-keyword">if</span> (model) &#123;<br>        <span class="hljs-comment">// 计算新的缩放值</span><br>        <span class="hljs-keyword">const</span> newScale = model.<span class="hljs-property">scale</span>.<span class="hljs-title function_">clone</span>().<span class="hljs-title function_">multiplyScalar</span>(scaleFactor);<br><br>        <span class="hljs-comment">// 设置缩放范围，例如，假设缩放范围在 -20 到 20 之间</span><br>        <span class="hljs-keyword">const</span> minScale = -<span class="hljs-number">30</span>;<br>        <span class="hljs-keyword">const</span> maxScale = <span class="hljs-number">30</span>;<br><br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(newScale);<br>        <span class="hljs-keyword">if</span> (newScale.<span class="hljs-property">x</span> &lt;= -<span class="hljs-number">5</span>) &#123;<br>          <span class="hljs-comment">// 限制缩放值在范围内</span><br>          newScale.<span class="hljs-title function_">clampScalar</span>(minScale, maxScale);<br><br>          <span class="hljs-comment">// 应用新的缩放值</span><br>          model.<span class="hljs-property">scale</span>.<span class="hljs-title function_">copy</span>(newScale);<br>        &#125;<br>      &#125;<br>    &#125;);<br>  &#125;;<br><br>  loadModels = <span class="hljs-function">(<span class="hljs-params">models: THREE.Group&lt;THREE.Object3DEventMap&gt;[]</span>) =&gt;</span> &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">models</span> = models;<br>  &#125;;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs processing">let orbitControlsHelper: any;<br><br># 创建轨道控制器辅助器<br>orbitControlsHelper = <span class="hljs-keyword">new </span><span class="hljs-class title_">OrbitControlsHelper</span>(renderer.<span class="hljs-property">value</span>.<span class="hljs-property">domElement</span>);<br><br># 禁用 轨道控制器缩放和平移旋转事件<br>controls.<span class="hljs-property">enableRotate</span> = <span class="hljs-literal">false</span>;<br>controls.<span class="hljs-property">enableZoom</span> = <span class="hljs-literal">false</span>;<br><br># 订阅鼠标按键事件<br>renderer.<span class="hljs-property">value</span>.<span class="hljs-property">domElement</span>.<span class="hljs-property">addEventListener</span>(<span class="hljs-string">&#x27;mousedown&#x27;</span>, orbitControlsHelper.<span class="hljs-property">handleMouseDown</span>);<br>renderer.<span class="hljs-property">value</span>.<span class="hljs-property">domElement</span>.<span class="hljs-property">addEventListener</span>(<span class="hljs-string">&#x27;mouseup&#x27;</span>, orbitControlsHelper.<span class="hljs-property">handleMouseUp</span>);<br>renderer.<span class="hljs-property">value</span>.<span class="hljs-property">domElement</span>.<span class="hljs-property">addEventListener</span>(<span class="hljs-string">&#x27;mousemove&#x27;</span>, orbitControlsHelper.<span class="hljs-property">handleMouseMove</span>);<br>renderer.<span class="hljs-property">value</span>.<span class="hljs-property">domElement</span>.<span class="hljs-property">addEventListener</span>(<span class="hljs-string">&#x27;wheel&#x27;</span>, orbitControlsHelper.<span class="hljs-property">handleWheel</span>);<br><br>#在执行动画渲染的函数加载需要修改的模型<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 执行动画渲染的函数</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> animate = () =&gt; &#123;<br>  <span class="hljs-title function_">requestAnimationFrame</span>(animate);<br>  # 加载模型<br>  orbitControlsHelper.<span class="hljs-property">loadModels</span>([FaceModelOne, FaceModelTwo, HistoryFaceModel]);<br>  <span class="hljs-comment">// 渲染左眼场景</span><br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setViewport</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-built_in">width</span>.<span class="hljs-property">value</span>, <span class="hljs-built_in">height</span>.<span class="hljs-property">value</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setScissor</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-built_in">width</span>.<span class="hljs-property">value</span>, <span class="hljs-built_in">height</span>.<span class="hljs-property">value</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setScissorTest</span>(<span class="hljs-literal">true</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">render</span>(sceneLeft, cameraLeft.<span class="hljs-property">value</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setPixelRatio</span>(window.<span class="hljs-property">devicePixelRatio</span>);<br><br>  <span class="hljs-comment">// 渲染右眼场景</span><br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setViewport</span>(<span class="hljs-built_in">width</span>.<span class="hljs-property">value</span>, <span class="hljs-number">0</span>, <span class="hljs-built_in">width</span>.<span class="hljs-property">value</span>, <span class="hljs-built_in">height</span>.<span class="hljs-property">value</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setScissor</span>(<span class="hljs-built_in">width</span>.<span class="hljs-property">value</span>, <span class="hljs-number">0</span>, <span class="hljs-built_in">width</span>.<span class="hljs-property">value</span>, <span class="hljs-built_in">height</span>.<span class="hljs-property">value</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setScissorTest</span>(<span class="hljs-literal">true</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">render</span>(sceneRight, cameraRight.<span class="hljs-property">value</span>);<br>  renderer.<span class="hljs-property">value</span>.<span class="hljs-property">setPixelRatio</span>(window.<span class="hljs-property">devicePixelRatio</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web3d/" class="category-chain-item">web3d</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web3d/threejs/" class="category-chain-item">threejs</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web3d/threejs/webgl/" class="category-chain-item">webgl</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/web3d/" class="print-no-link">#web3d</a>
+      
+        <a href="/tags/threejs/" class="print-no-link">#threejs</a>
+      
+        <a href="/tags/webgl/" class="print-no-link">#webgl</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>threejs轨道控制器辅助器</div>
+      <div>https://junsen.online/2024/01/10/threejs轨道控制器辅助器/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Junsen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/26/vue3-ts-vite%E9%9B%86%E6%88%90electron%E8%AE%B0%E5%BD%95/" title="vue3-ts-vite集成electron记录">
+                        <span class="hidden-mobile">vue3-ts-vite集成electron记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://junsen.online/2024/01/10/threejs%E8%BD%A8%E9%81%93%E6%8E%A7%E5%88%B6%E5%99%A8%E8%BE%85%E5%8A%A9%E5%99%A8/';
+          this.page.identifier = '/2024/01/10/threejs%E8%BD%A8%E9%81%93%E6%8E%A7%E5%88%B6%E5%99%A8%E8%BE%85%E5%8A%A9%E5%99%A8/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <div class="footer-content"> <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>  </div> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备2023129632号-1
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

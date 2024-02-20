@@ -1,0 +1,925 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Junsen">
+  <meta name="keywords" content="Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs">
+  
+    <meta name="description" content="配置eslint什么是eslint? ESLint 是一个 JavaScript 和 TypeScript 的静态代码分析工具，它用于识别代码中的问题并提供一致性和规范性。简单来说，它的作用是：  检测错误和潜在的问题： ESLint 可以帮助你找到代码中的错误、潜在的 bug 以及不规范的写法，从而提高代码的质量和稳定性。 强制执行代码风格规范： 它可以根据预定义的规则或自定义的规则来强制执行一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vite项目初始化基建">
+<meta property="og:url" content="https://junsen.online/2024/02/20/vite%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%9F%BA%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Junsen Blog">
+<meta property="og:description" content="配置eslint什么是eslint? ESLint 是一个 JavaScript 和 TypeScript 的静态代码分析工具，它用于识别代码中的问题并提供一致性和规范性。简单来说，它的作用是：  检测错误和潜在的问题： ESLint 可以帮助你找到代码中的错误、潜在的 bug 以及不规范的写法，从而提高代码的质量和稳定性。 强制执行代码风格规范： 它可以根据预定义的规则或自定义的规则来强制执行一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/cjxore-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/dcgx0e-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/ddcik6-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/ddyrnf-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/defi6y-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/dezy1j-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/dfqdaq-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/dgn0by-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/20/dhjk9n-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/21/24ycux-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/02/21/2eo2iz-2.png">
+<meta property="article:published_time" content="2024-02-20T17:51:00.000Z">
+<meta property="article:modified_time" content="2024-02-20T18:02:17.766Z">
+<meta property="article:author" content="Junsen">
+<meta property="article:tag" content="前端">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tuchuang.junsen.online/i/2024/02/20/cjxore-2.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>vite项目初始化基建 - Junsen Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"junsen.online","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Junsen Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="vite项目初始化基建"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Junsen
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-21 01:51" pubdate>
+          星期三, 二月 21日 2024, 1:51 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">vite项目初始化基建</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="配置eslint"><a href="#配置eslint" class="headerlink" title="配置eslint"></a>配置eslint</h2><h3 id="什么是eslint"><a href="#什么是eslint" class="headerlink" title="什么是eslint?"></a>什么是eslint?</h3><blockquote>
+<p>ESLint 是一个 JavaScript 和 TypeScript 的静态代码分析工具，它用于识别代码中的问题并提供一致性和规范性。简单来说，它的作用是：</p>
+<ol>
+<li><strong>检测错误和潜在的问题：</strong> ESLint 可以帮助你找到代码中的错误、潜在的 bug 以及不规范的写法，从而提高代码的质量和稳定性。</li>
+<li><strong>强制执行代码风格规范：</strong> 它可以根据预定义的规则或自定义的规则来强制执行一致的代码风格，以确保团队成员之间的代码风格一致，提高代码的可读性和可维护性。</li>
+<li><strong>提供自定义规则和插件支持：</strong> ESLint 允许你根据项目的特定需求定义自定义规则，并且支持各种插件，可以满足不同项目的特定需求。</li>
+</ol>
+<p>总的来说，ESLint 可以帮助开发人员编写更加干净、可靠和符合规范的代码。</p>
+</blockquote>
+<h3 id="安装命令"><a href="#安装命令" class="headerlink" title="安装命令"></a>安装命令</h3><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cmd"># 方案<span class="hljs-number">1</span> <br>pnpm i -D eslint<br></code></pre></td></tr></table></figure>
+
+<h3 id="规则方案"><a href="#规则方案" class="headerlink" title="规则方案"></a>规则方案</h3><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cmd"># 使用集成方案，内置好了所需规则<br>pnpm i -D @antfu/eslint-config <br><br># eslint默认方案，通过命令初始化eslint规则<br>npx eslint --init<br></code></pre></td></tr></table></figure>
+
+<h4 id="eslint集成方案"><a href="#eslint集成方案" class="headerlink" title="eslint集成方案"></a>eslint集成方案</h4><blockquote>
+<p>先安装方案一的@antfu&#x2F;eslint-config </p>
+<p>在根目录新建 eslint.config.js即可</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> antfu <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@antfu/eslint-config&#x27;</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">antfu</span>(&#123;<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="eslint初始化默认方案（可选）"><a href="#eslint初始化默认方案（可选）" class="headerlink" title="eslint初始化默认方案（可选）"></a>eslint初始化默认方案（可选）</h4><h5 id="第一步-选择检测类型"><a href="#第一步-选择检测类型" class="headerlink" title="第一步 选择检测类型"></a>第一步 选择检测类型</h5><ul>
+<li><p>仅检查语法</p>
+</li>
+<li><p>检查语法并查找问题</p>
+</li>
+<li><p>若要检查语法、寻找问题并胁迫执行程式码样式</p>
+<p><strong>选择第二个，To check syntax and find problems</strong></p>
+</li>
+</ul>
+<p><img src="https://tuchuang.junsen.online/i/2024/02/20/cjxore-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220075859922"></p>
+<h5 id="第二步-选择项目是什么类型的模块"><a href="#第二步-选择项目是什么类型的模块" class="headerlink" title="第二步 选择项目是什么类型的模块"></a>第二步 选择项目是什么类型的模块</h5><p><strong>有以下三个选项，根据项目所需选择，这里使用的是js模块选择第一个即可</strong></p>
+<ul>
+<li>JavaScript模块（导入&#x2F;导出）</li>
+<li>CommonJS（require&#x2F;exports）</li>
+<li>没有这些</li>
+</ul>
+<p><img src="https://tuchuang.junsen.online/i/2024/02/20/dcgx0e-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220080700457"></p>
+<h5 id="第三步-选择所使用的框架-根据你的项目选择即可"><a href="#第三步-选择所使用的框架-根据你的项目选择即可" class="headerlink" title="第三步 选择所使用的框架 根据你的项目选择即可"></a>第三步 选择所使用的框架 根据你的项目选择即可</h5><p><img src="https://tuchuang.junsen.online/i/2024/02/20/ddcik6-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220080847042"></p>
+<h5 id="第四步-是否使用了ts-根据自己项目的选择"><a href="#第四步-是否使用了ts-根据自己项目的选择" class="headerlink" title="第四步 是否使用了ts,根据自己项目的选择"></a>第四步 是否使用了ts,根据自己项目的选择</h5><p><img src="https://tuchuang.junsen.online/i/2024/02/20/ddyrnf-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220080951098"></p>
+<h5 id="第五步-选择运行环境，一般选浏览器，也就是第一个browser"><a href="#第五步-选择运行环境，一般选浏览器，也就是第一个browser" class="headerlink" title="第五步 选择运行环境，一般选浏览器，也就是第一个browser"></a>第五步 选择运行环境，一般选浏览器，也就是第一个browser</h5><p><img src="https://tuchuang.junsen.online/i/2024/02/20/defi6y-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220081029606"></p>
+<h5 id="第六步-选择配置文件的类型，一般第一个即可"><a href="#第六步-选择配置文件的类型，一般第一个即可" class="headerlink" title="第六步 选择配置文件的类型，一般第一个即可"></a>第六步 选择配置文件的类型，一般第一个即可</h5><p><img src="https://tuchuang.junsen.online/i/2024/02/20/dezy1j-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220081125789"></p>
+<h5 id="第七步-是否需要以下依赖，直接yes就行了，如果不用选no"><a href="#第七步-是否需要以下依赖，直接yes就行了，如果不用选no" class="headerlink" title="第七步 是否需要以下依赖，直接yes就行了，如果不用选no"></a>第七步 是否需要以下依赖，直接yes就行了，如果不用选no</h5><p><img src="https://tuchuang.junsen.online/i/2024/02/20/dfqdaq-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220081248294"></p>
+<h5 id="第八步-选择安装依赖的方式，根据你项目所需的包管理选择"><a href="#第八步-选择安装依赖的方式，根据你项目所需的包管理选择" class="headerlink" title="第八步 选择安装依赖的方式，根据你项目所需的包管理选择"></a>第八步 选择安装依赖的方式，根据你项目所需的包管理选择</h5><p><img src="https://tuchuang.junsen.online/i/2024/02/20/dgn0by-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220081400408"></p>
+<p><strong>执行完毕后的样子，根目录会多出 .eslintrc.cjs 的文件，在里面配置规则即可</strong></p>
+<p><img src="https://tuchuang.junsen.online/i/2024/02/20/dhjk9n-2.png" srcset="/img/loading.gif" lazyload alt="image-20240220081552312"></p>
+<h3 id="vscode-settings-json"><a href="#vscode-settings-json" class="headerlink" title=".vscode&#x2F;settings.json"></a>.vscode&#x2F;settings.json</h3><blockquote>
+<p>这个配置文件是用来配置编辑器（如 VSCode）的，主要针对 ESLint 和 Prettier 的设置。具体含义如下：</p>
+<ul>
+<li><code>&quot;eslint.experimental.useFlatConfig&quot;: true</code>: 启用 ESLint 的扁平配置支持。</li>
+<li><code>&quot;prettier.enable&quot;: false</code>: 禁用默认的格式化程序，改用 ESLint 来格式化代码。</li>
+<li><code>&quot;editor.formatOnSave&quot;: false</code>: 关闭在保存时自动格式化代码的功能。</li>
+<li><code>&quot;editor.codeActionsOnSave&quot;</code>: 在保存时执行的代码操作，其中 <code>&quot;source.fixAll.eslint&quot;: &quot;explicit&quot;</code> 表示显式地自动修复 ESLint 报告的所有问题，<code>&quot;source.organizeImports&quot;: &quot;never&quot;</code> 表示不进行导入组织操作。</li>
+<li><code>&quot;eslint.rules.customizations&quot;</code>: 定制 ESLint 规则，将一些样式规则的严重程度设置为 “off”，这样编辑器会静默地忽略这些规则，但仍会自动修复它们。</li>
+<li><code>&quot;eslint.validate&quot;</code>: 启用 ESLint 对各种语言的验证，包括 JavaScript、TypeScript、Vue、HTML、Markdown 等。</li>
+</ul>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-comment">// 启用 ESLint 的扁平配置支持</span><br>  <span class="hljs-attr">&quot;eslint.experimental.useFlatConfig&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br><br>  <span class="hljs-comment">// 禁用默认的格式化程序，改用 ESLint</span><br>  <span class="hljs-attr">&quot;prettier.enable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;editor.formatOnSave&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br><br>  <span class="hljs-comment">// 自动修复</span><br>  <span class="hljs-attr">&quot;editor.codeActionsOnSave&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;source.fixAll.eslint&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;explicit&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;source.organizeImports&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;never&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br><br>  <span class="hljs-comment">// 在编辑器中静默规避样式规则，但仍然自动修复它们</span><br>  <span class="hljs-attr">&quot;eslint.rules.customizations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;style/*&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;format/*&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*-indent&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*-spacing&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*-spaces&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*-order&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*-dangle&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*-newline&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*quotes&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;rule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*semi&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;off&quot;</span> <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br><br>  <span class="hljs-comment">// 对所有支持的语言启用 ESLint</span><br>  <span class="hljs-attr">&quot;eslint.validate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;javascript&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;javascriptreact&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;typescript&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;typescriptreact&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;vue&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;html&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;markdown&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;json&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;jsonc&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;yaml&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;toml&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="配置husky"><a href="#配置husky" class="headerlink" title="配置husky"></a>配置husky</h2><h3 id="安装husky与lint-staged"><a href="#安装husky与lint-staged" class="headerlink" title="安装husky与lint-staged"></a>安装husky与lint-staged</h3><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmd">pnpm install -D husky lint-staged<br></code></pre></td></tr></table></figure>
+
+<h3 id="初始化husky"><a href="#初始化husky" class="headerlink" title="初始化husky"></a>初始化husky</h3><blockquote>
+<p>在package.json scripts里面新增下面语句初始化husky,也可以执行执行 npx husky-init，执行完毕后会在项目根目录自动新增.husky文件夹</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">&quot;prepare&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;husky install&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="指定husky给lint-staged执行"><a href="#指定husky给lint-staged执行" class="headerlink" title="指定husky给lint-staged执行"></a>指定husky给lint-staged执行</h3><blockquote>
+<p>使用 lint-staged 的主要原因是它可以让 lint 工具只针对暂存区中的文件运行，而不是整个项目，这样可以提高 lint 的效率，只检查即将提交的代码，而不是整个项目的所有代码。这在大型项目中尤其有用，因为 lint-staged 可以帮助减少 lint 运行的时间，提高开发效率。</p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile">npx husky <span class="hljs-keyword">add</span><span class="language-bash"> .husky/pre-commit <span class="hljs-string">&quot;npx lint-staged&quot;</span></span><br></code></pre></td></tr></table></figure>
+
+<h2 id="配置commitlint"><a href="#配置commitlint" class="headerlink" title="配置commitlint"></a>配置commitlint</h2><blockquote>
+<p>由于实际开发中会多人参与，对于我们的commit信息，也是有统一规范的，不能随便写,要让每个人都按照统一的标准来执行，我们可以利用<strong>commitlint</strong>来实现。根据<em><strong>Angular</strong></em>的提交规范会有以下几种</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><strong>类型</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>build</td>
+<td>编译相关的修改，例如发布版本、对项目构建或者依赖的改动</td>
+</tr>
+<tr>
+<td>chore</td>
+<td>其他修改, 比如改变构建流程、或者增加依赖库、工具等</td>
+</tr>
+<tr>
+<td>ci</td>
+<td>持续集成修改</td>
+</tr>
+<tr>
+<td>docs</td>
+<td>文档修改</td>
+</tr>
+<tr>
+<td>feat</td>
+<td>新特性、新功能</td>
+</tr>
+<tr>
+<td>fix</td>
+<td>修改bug</td>
+</tr>
+<tr>
+<td>perf</td>
+<td>优化相关，比如提升性能、体验</td>
+</tr>
+<tr>
+<td>refactor</td>
+<td>代码重构</td>
+</tr>
+<tr>
+<td>revert</td>
+<td>回滚到上一个版本</td>
+</tr>
+<tr>
+<td>style</td>
+<td>代码格式修改, 注意不是 css 修改</td>
+</tr>
+<tr>
+<td>test</td>
+<td>测试用例修改</td>
+</tr>
+</tbody></table>
+<h3 id="安装-commitlint"><a href="#安装-commitlint" class="headerlink" title="安装  commitlint"></a>安装  commitlint</h3><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmd">pnpm add @commitlint/config-conventional @commitlint/cli -D<br></code></pre></td></tr></table></figure>
+
+<h3 id="根目录-新建-commitlint-config-cjs"><a href="#根目录-新建-commitlint-config-cjs" class="headerlink" title="根目录 新建 commitlint.config.cjs"></a>根目录 新建 commitlint.config.cjs</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">extends</span>: [<span class="hljs-string">&#x27;@commitlint/config-conventional&#x27;</span>],<br>  <span class="hljs-comment">// 校验规则</span><br>  <span class="hljs-attr">rules</span>: &#123;<br>    <span class="hljs-string">&#x27;type-enum&#x27;</span>: [<br>      <span class="hljs-number">2</span>,<br>      <span class="hljs-string">&#x27;always&#x27;</span>,<br>      [<br>        <span class="hljs-string">&#x27;feat&#x27;</span>,<br>        <span class="hljs-string">&#x27;fix&#x27;</span>,<br>        <span class="hljs-string">&#x27;docs&#x27;</span>,<br>        <span class="hljs-string">&#x27;style&#x27;</span>,<br>        <span class="hljs-string">&#x27;refactor&#x27;</span>,<br>        <span class="hljs-string">&#x27;perf&#x27;</span>,<br>        <span class="hljs-string">&#x27;test&#x27;</span>,<br>        <span class="hljs-string">&#x27;chore&#x27;</span>,<br>        <span class="hljs-string">&#x27;revert&#x27;</span>,<br>        <span class="hljs-string">&#x27;build&#x27;</span>,<br>      ],<br>    ],<br>    <span class="hljs-string">&#x27;type-case&#x27;</span>: [<span class="hljs-number">0</span>],<br>    <span class="hljs-string">&#x27;type-empty&#x27;</span>: [<span class="hljs-number">0</span>],<br>    <span class="hljs-string">&#x27;scope-empty&#x27;</span>: [<span class="hljs-number">0</span>],<br>    <span class="hljs-string">&#x27;scope-case&#x27;</span>: [<span class="hljs-number">0</span>],<br>    <span class="hljs-string">&#x27;subject-full-stop&#x27;</span>: [<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;never&#x27;</span>],<br>    <span class="hljs-string">&#x27;subject-case&#x27;</span>: [<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;never&#x27;</span>],<br>    <span class="hljs-string">&#x27;header-max-length&#x27;</span>: [<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;always&#x27;</span>, <span class="hljs-number">72</span>],<br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="在package-json中配置scripts命令"><a href="#在package-json中配置scripts命令" class="headerlink" title="在package.json中配置scripts命令"></a>在<code>package.json</code>中配置scripts命令</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-meta"># 在scrips中添加下面的代码</span><br>&#123;<br><span class="hljs-string">&quot;scripts&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;commitlint&quot;</span>: <span class="hljs-string">&quot;commitlint --config commitlint.config.cjs -e -V&quot;</span><br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="给-husky新增commit-msg钩子指令"><a href="#给-husky新增commit-msg钩子指令" class="headerlink" title="给 husky新增commit-msg钩子指令"></a>给 husky新增commit-msg钩子指令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">npx husky add .husky/commit-msg <br><br><span class="hljs-comment"># 在生成的commit-msg文件中添加下面的命令(路径在.husky/)</span><br><br><span class="hljs-comment">#!/usr/bin/env sh</span><br>. <span class="hljs-string">&quot;<span class="hljs-subst">$(dirname -- <span class="hljs-string">&quot;<span class="hljs-variable">$0</span>&quot;</span>)</span>/_/husky.sh&quot;</span><br>pnpm commitlint<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当我们git commit -m 时需要指定上面提到的前缀才能正常commit ，feat后面的冒号要英文的 :</p>
+<p>git commit -m “feat: 新增commitlint规范Commit记录”</p>
+</blockquote>
+<h2 id="配置环境变量配置"><a href="#配置环境变量配置" class="headerlink" title="配置环境变量配置"></a>配置环境变量配置</h2><blockquote>
+<ol>
+<li><strong>安全性：</strong> 将敏感信息（如 API 密钥、数据库密码等）存储在环境变量中比直接硬编码在代码中更安全。这样做可以避免将这些敏感信息泄露到版本控制系统中，降低了信息泄露的风险。</li>
+<li><strong>灵活性：</strong> 使用环境变量可以使你的应用程序在不同的环境中（例如开发、测试、生产）运行时具有不同的配置。你可以针对不同的环境设置不同的环境变量，而不需要修改代码。</li>
+<li><strong>可维护性：</strong> 将配置信息放在环境变量中可以使代码更易于维护。如果需要更改配置，只需更改环境变量的值，而不需要修改代码并重新部署应用程序。</li>
+<li><strong>可移植性：</strong> 使用环境变量可以使你的应用程序更具可移植性。你可以在不同的环境中轻松地部署应用程序，而无需担心配置信息的硬编码问题。</li>
+</ol>
+<p>综上所述，配置环境变量是一种良好的实践，可以提高应用程序的安全性、灵活性、可维护性和可移植性。</p>
+</blockquote>
+<h3 id="根目录新建开发、测试、生产环境配置文件"><a href="#根目录新建开发、测试、生产环境配置文件" class="headerlink" title="根目录新建开发、测试、生产环境配置文件"></a>根目录新建开发、测试、生产环境配置文件</h3><blockquote>
+<p>下面命令执行不了可以直接根目录新建文件.env.development这种方式</p>
+</blockquote>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cmd">touch .env.development<br>touch .env.production<br>touch .env.test <br></code></pre></td></tr></table></figure>
+
+<h3 id="文件内容"><a href="#文件内容" class="headerlink" title="文件内容"></a>文件内容</h3><h4 id="开发环境模板"><a href="#开发环境模板" class="headerlink" title="开发环境模板"></a>开发环境模板</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs env">NODE_ENV = &#x27;development&#x27;<br># 项目名称<br>VITE_APP_TITLE = &#x27;Vue 3 + Vite + TSX&#x27;<br># 请求根路径<br>VITE_APP_BASE_API = &#x27;/dev-api&#x27;<br># 请求地址<br>VITE_APP_BASE_URL = &#x27;http://localhost:3000&#x27;<br></code></pre></td></tr></table></figure>
+
+<h4 id="生产环境模板"><a href="#生产环境模板" class="headerlink" title="生产环境模板"></a>生产环境模板</h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">NODE_ENV</span> = <span class="hljs-string">&#x27;production&#x27;</span><br><span class="hljs-comment"># 项目名称</span><br><span class="hljs-attr">VITE_APP_TITLE</span> = <span class="hljs-string">&#x27;Vue 3 + Vite + TSX&#x27;</span><br><span class="hljs-comment"># 请求根路径</span><br><span class="hljs-attr">VITE_APP_BASE_API</span> = <span class="hljs-string">&#x27;/prod-api&#x27;</span><br><span class="hljs-comment"># 请求地址</span><br><span class="hljs-attr">VITE_APP_BASE_URL</span> = <span class="hljs-string">&#x27;http://junsen.online:3000&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="测试环境模板"><a href="#测试环境模板" class="headerlink" title="测试环境模板"></a>测试环境模板</h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 变量必须以 VITE_ 为前缀才能暴露给外部读取</span><br><span class="hljs-attr">NODE_ENV</span> = <span class="hljs-string">&#x27;test&#x27;</span><br><span class="hljs-comment"># 项目名称</span><br><span class="hljs-attr">VITE_APP_TITLE</span> = <span class="hljs-string">&#x27;Vue 3 + Vite + TSX&#x27;</span><br><span class="hljs-comment"># 请求根路径</span><br><span class="hljs-attr">VITE_APP_BASE_API</span> = <span class="hljs-string">&#x27;/test-api&#x27;</span><br><span class="hljs-comment"># 请求地址</span><br><span class="hljs-attr">VITE_APP_BASE_URL</span> = <span class="hljs-string">&#x27;http://junsen.online:7001&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="启动时设置环境变量"><a href="#启动时设置环境变量" class="headerlink" title="启动时设置环境变量"></a>启动时设置环境变量</h4><blockquote>
+<p>package.json scripts里面新增以下两条命令</p>
+</blockquote>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs n1ql">&quot;<span class="hljs-keyword">build</span>:test<span class="hljs-string">&quot;: &quot;</span>vue-tsc &amp;&amp; vite <span class="hljs-keyword">build</span> --mode test<span class="hljs-string">&quot;,</span><br><span class="hljs-string">&quot;</span><span class="hljs-keyword">build</span>:pro<span class="hljs-string">&quot;: &quot;</span>vue-tsc &amp;&amp; vite <span class="hljs-keyword">build</span> --mode production<span class="hljs-string">&quot;,</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="给import-meta-env-添加变量提示"><a href="#给import-meta-env-添加变量提示" class="headerlink" title="给import.meta.env 添加变量提示"></a>给import.meta.env 添加变量提示</h4><blockquote>
+<p>项目src目录下新增env.d.ts</p>
+</blockquote>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/// &lt;reference types=&quot;vite/client&quot; /&gt;</span><br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ImportMetaEnv</span> &#123;<br>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">VITE_APP_TITLE</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-comment">// 更多环境变量...</span><br>&#125;<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ImportMeta</span> &#123;<br>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">env</span>: <span class="hljs-title class_">ImportMetaEnv</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://tuchuang.junsen.online/i/2024/02/21/24ycux-2.png" srcset="/img/loading.gif" lazyload alt="image-20240221012925698"></p>
+<h2 id="新增路径别名"><a href="#新增路径别名" class="headerlink" title="新增路径别名"></a>新增路径别名</h2><h3 id="在vite-config-ts中新增以下配置"><a href="#在vite-config-ts中新增以下配置" class="headerlink" title="在vite.config.ts中新增以下配置"></a>在vite.config.ts中新增以下配置</h3><blockquote>
+<p>引入path冒红需要安装node头文件因为ts识别不出，执行pnpm add @types&#x2F;node</p>
+</blockquote>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-attr">resolve</span>: &#123;<br>    <span class="hljs-attr">alias</span>: &#123;<br>      <span class="hljs-string">&#x27;@&#x27;</span>: path.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">&#x27;./src&#x27;</span>),<br>    &#125;,<br>  &#125;,<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://tuchuang.junsen.online/i/2024/02/21/2eo2iz-2.png" srcset="/img/loading.gif" lazyload alt="image-20240221014556916"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>为什么不适用 prettier格式化？</p>
+<ul>
+<li>引用 antfu 的原话：如果你需要使用 ESLint，它也可以像 Prettier 一样格式化代码 - 而且更加可配置、Prettier + ESLint 仍然需要大量的配置 - 它并没有让你的生活变得更简单</li>
+</ul>
+<p>为什么要如此配置？</p>
+<ul>
+<li>可以规范化项目。从代码格式到校验、以及提交规范，开发环境区分，可以解决大部分因为规范引起代码混乱，不便于code review，</li>
+<li>加上在ts的加持下，提供了静态类型检查的功能，可以在编译时捕获类型错误，避免在运行时出现类型相关的错误。这可以提高代码的可靠性和可维护性以及强大的代码提示和自动完成功能，可以帮助开发人员更快地编写代码、发现 API 和库的用法，并减少错误。</li>
+</ul>
+<p>还会有后续文章吗？</p>
+<ul>
+<li>会有的，后续的规划是复习node、webpack、vite等内容，从构建工具底层原理入手。</li>
+</ul>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF/" class="print-no-link">#前端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>vite项目初始化基建</div>
+      <div>https://junsen.online/2024/02/20/vite项目初始化基建/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Junsen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/06/2023%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" title="2023年前端开发年度总结">
+                        <span class="hidden-mobile">2023年前端开发年度总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://junsen.online/2024/02/20/vite%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%9F%BA%E5%BB%BA/';
+          this.page.identifier = '/2024/02/20/vite%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%9F%BA%E5%BB%BA/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <div class="footer-content"> <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>  </div> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备2023129632号-1
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

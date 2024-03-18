@@ -42,7 +42,7 @@ date: 2024-03-18 01:51:00
   5. **所有函数都是对象：** 在 JavaScript 中，函数也是一种对象。函数可以被赋值给变量，作为对象的属性，传递给函数等，因此它们也是对象的一种。
   6. **所有对象都有一个 `__proto__` 属性：** 所有对象都具有一个 `__proto__` 属性，它指向了该对象的原型对象。这个属性构成了原型链的基础。
 
-​							!![image-20240316135952389](https://tuchuang.junsen.online/i/2024/03/18/3c041e-2.png)				
+​					![image-20240316135952389](https://tuchuang.junsen.online/i/2024/03/18/3c041e-2.png)				
 
 ```javascript
 // 构造函数
@@ -432,8 +432,6 @@ function checkScope(){ // 定义函数 checkScope
     fContext.variableObject.arguments = {length: 0}; // 在 f 函数执行上下文中，变量对象中的 arguments 属性为一个对象，表示没有传入参数
     function f(){ // 定义内部函数 f
         ecs.push(fContext); // 将 f 函数执行上下文推入执行上下文栈中，表示进入了 f 函数的执行过程
-         // 模拟 VO 到 AO 的变化
-    	fContext.variableObject = { scope: "local scope" };
         console.log("current context:",ecs.peek().name); // 打印当前执行上下文的名称
         ecs.pop(); // 弹出栈顶执行上下文，表示退出了 f 函数的执行过程
         return scope; // 返回当前作用域中的 scope 变量的值
@@ -472,7 +470,6 @@ ecs.push(globalContext)
 const checkScopeContext = new ExecutionContext("checkscope"); // 创建 checkscope 函数执行上下文对象，名称为 "checkscope"
 checkScopeContext.variableObject.scope = undefined; // 在 checkscope 函数执行上下文中，变量对象中的 scope 属性为 undefined
 checkScopeContext.variableObject.arguments = {length: 0}; // 在 checkscope 函数执行上下文中，变量对象中的 arguments 属性为一个对象，表示没有传入参数
-
 function checkScope(){ // 定义函数 checkScope
     ecs.push(checkScopeContext); // 将 checkScope 函数执行上下文推入执行上下文栈中，表示进入了 checkScope 函数的执行过程
 	checkScopeContext.variableObject.scope = "local scope"; // 将局部变量 scope 的值设置为 "local scope"，表示进入了 checkScope 函数内部的执行过程
@@ -484,9 +481,7 @@ function checkScope(){ // 定义函数 checkScope
    
      // 定义内部函数 f
     function f(){
-         ecs.push(fContext); // 将 f 函数执行上下文推入执行上下文栈中，表示进入了 f 函数的执行过程
-         // 模拟 VO 到 AO 的变化
-    	fContext.variableObject = { scope: "local scope" };
+        ecs.push(fContext); // 将 f 函数执行上下文推入执行上下文栈中，表示进入了 f 函数的执行过程
         console.log("current context:",ecs.peek().name); // 打印当前执行上下文的名称
         ecs.pop(); // 弹出栈顶执行上下文，表示退出了 f 函数的执行过程
         return scope; // 返回当前作用域中的 scope 变量的值

@@ -1,5 +1,5 @@
 ---
-title: JavaScript内功修炼：原型继承
+title: JavaScript内功修炼：探索原型机制与各类继承模式
 categories: ['前端笔记']
 tags: ['前端笔记']
 date: 2024-04-01 22:48:00 

@@ -422,6 +422,8 @@ console.log('Script end');
 
 ### 手写queryMicrotask
 
+- 写法是渡一袁老师的写法，学习如何实现一个`queueMicrotask`
+
 ```javascript
 function runMicroTask(runc) {
     if (typeof process === 'object' && typeof process.nextTick === 'function') {
@@ -447,3 +449,467 @@ function runMicroTask(runc) {
 }
 
 ```
+
+
+
+
+
+## Promise A+ 规范实现
+
+```javascript
+// 第一步定义Promise状态
+const PENDING = 'pending';
+const FULFILLED = 'fulfilled';
+const REJECTED = 'rejected'
+
+function isPromise(obj) {
+    return !!(obj && typeof obj === 'object' && typeof obj.then === 'function');
+}
+
+// 第二步
+class MyPromise {
+    // 第三步定义基础属性
+    PromiseState;
+    PromiseResult;
+    onFulfilledCallbacks = []; // 初始化成功回调的存储数组
+    onRejectedCallbacks = []; // 初始化失败回调的存储数组
+    constructor(executor) {
+        // 初始化状态
+        this.initValue()
+        // 第七步执行传进来的函数,在Promise中可以捕获抛出的异常
+        try {
+            // 有个前提，resolve和reject需要绑定执行它的那个Promise实例
+            // 给resolve和reject绑定this
+            executor(this.#resolve.bind(this), this.#reject.bind(this))
+        } catch (error) {
+            // 如果执行器抛出异常，则调用reject方法，并传入异常
+            this.#reject(error)
+        }
+
+    }
+
+    // 第四步初始化Promise的状态
+    initValue() {
+        this.PromiseState = PENDING;
+        this.PromiseResult = undefined;
+    }
+
+    // 第五步定义统一的状态变更函数
+    #changeStatus(PromiseState, value) {
+        // Promise只有成功或失败，如果状态不是默认的Pending就表明已经变更过了，不能执行后续的代码
+        if (this.PromiseState !== PENDING) return;
+        this.PromiseState = PromiseState;
+        this.PromiseResult = value;
+
+        // 每次状态变更后都要执行#executeCallbacks方法，根据当前状态执行对应的回调函数
+        this.#executeCallbacks()
+    }
+
+    // 第六五步定义resolve方法和reject方法
+    #resolve(value) {
+        // 调用Promise状态变更函数
+        this.#changeStatus(FULFILLED, value)
+    }
+
+    #reject(reason) {
+        // 调用Promise状态变更函数
+        this.#changeStatus(REJECTED, reason)
+    }
+
+    #executeCallbacks() {
+        // 根据当前状态，执行对应的回调函数
+        if (this.PromiseState === FULFILLED) {
+            while (this.onFulfilledCallbacks.length) {
+                // 因为数组本身就和队列的性质一样，通过shift方法可以取出数组中的第一个元素,然后执行里面缓存的回调函数，把当前状态传进去（这里执行的就是存入数组的resolvePromise辅助函数）
+                this.onFulfilledCallbacks.shift()(this.PromiseResult)
+            }
+        } else if (this.PromiseState === REJECTED) {
+            while (this.onRejectedCallbacks.length) {
+                this.onRejectedCallbacks.shift()(this.PromiseResult)
+            }
+        }
+    }
+
+    // 第八步定义then方法接收两个回调 onFulfilled, onRejected
+    then(onFulfilled, onRejected) {
+        // 判断是否是函数如果不是包装下返回值为函数
+        onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
+        onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason };
+        // 根据上面分析得知，then是支持链式调用，返回的一个包装后的promise对象并且传递给下一个then的成功回调，失败的给失败的
+        const thenPromise = new MyPromise((resolve, reject) => {
+            // 通过queueMicrotask来异步执行回调，以确保符合Promise规范的异步行为。这也解决了thenPromise变量作用域的问题，因为handleCallback是在thenPromise被定义之后才使用的。
+            // 创建辅助函数resolvePromise
+            const resolvePromise = (callback, resolve, reject) => {
+                // 使用js提供的微任务环境，因为then本身就是微任务
+                queueMicrotask(() => {
+                    try {
+                        // 立即执行传入的onFulfilled或onRejected方法，拿到结果存起来
+                        const result = callback(this.PromiseResult)
+                        // 判断结果是不是和当前返回的promise对象是同一个，如果是则抛出异常，因为循环引用了
+                        if (result && result === thenPromise) {
+                            throw new Error('循环引用');
+                        }
+                        // 判断当前结果是不是一个Promise对象，如果是则调用then方法，把结果传进去，把then返回的promise对象作为结果返回
+                        if (isPromise(result)) {
+                            result.then(resolve, reject)
+                        } else {
+                            resolve(result);
+                        }
+                    } catch (error) {
+                        // 拦截thenPromise内部的异常返回回去，然后继续往外抛出
+                        reject(error)
+                        throw new Error(error);
+                    }
+                })
+            }
+
+            // 根据状态处理不同状态的回调函数
+            if (this.PromiseState === FULFILLED) {
+                // 如果当前为成功状态，执行第一个回调
+                resolvePromise(onFulfilled, resolve, reject)
+            } else if (this.PromiseState === REJECTED) {
+                // 如果当前为失败状态，执行第二个回调
+                resolvePromise(onRejected, resolve, reject)
+            } else if (this.PromiseState === PENDING) {
+                // 如果当前为等待状态，把回调函数存起来，等状态变更后再执行
+                this.onFulfilledCallbacks.push(() => resolvePromise(onFulfilled, resolve, reject))
+                this.onRejectedCallbacks.push(() => resolvePromise(onRejected, resolve, reject))
+            }
+        })
+
+        return thenPromise;
+    }
+
+    static resolve(data) {
+        return new MyPromise((resolve, reject) => {
+            if (isPromiseLike(data)) {
+                data.then(resolve, reject);
+            } else {
+                resolve(data);
+            }
+        });
+    }
+
+    static reject(reason) {
+        return new MyPromise((resolve, reject) => {
+            reject(reason);
+        });
+    }
+
+
+    static all(promises) {
+        const result = [];
+        let count = 0;
+
+        return new MyPromise((resolve, reject) => {
+            const addData = (index, value) => {
+                result[index] = value;
+                count++;
+                if (count === promises.length) {
+                    resolve(result);
+                }
+            }
+
+            promises.forEach((promise, index) => {
+                if (isPromise(promise)) {
+                    promise.then(res => {
+                        addData(index, res);
+                    }, error => reject(error));
+                } else {
+                    addData(index, promise);
+                }
+            })
+        })
+    }
+
+    static race(promises) {
+        return new MyPromise((resolve, reject) => {
+            promises.forEach(promise => {
+                if(isPromise(promise)) {
+                    promise.then(res => {
+                        resolve(res)
+                    }, err => {
+                        reject(err)
+                    })
+                } else {
+                    resolve(promise)
+                }
+            })
+        })
+    }
+
+    static allSettled(promises) {
+        return new Promise((resolve, reject) => {
+            const res = []
+            let count = 0
+            const addData = (status, value, i) => {
+                res[i] = {
+                    status,
+                    value
+                }
+                count++
+                if (count === promises.length) {
+                    resolve(res)
+                }
+            }
+            promises.forEach((promise, i) => {
+                if (isPromise(promise)) {
+                    promise.then(res => {
+                        addData('fulfilled', res, i)
+                    }, err => {
+                        addData('rejected', err, i)
+                    })
+                } else {
+                    addData('fulfilled', promise, i)
+                }
+            })
+        })
+    }
+
+    static any(promises) {
+        return new Promise((resolve, reject) => {
+            let count = 0
+            promises.forEach((promise) => {
+                promise.then(val => {
+                    resolve(val)
+                }, err => {
+                    count++
+                    if (count === promises.length) {
+                        reject(new AggregateError('All promises were rejected'))
+                    }
+                })
+            })
+        })
+    }
+
+    catch(onRejected) { 
+        return this.then(null, onRejected); 
+    }
+
+    finally(onSettled) {
+        return this.then(
+            (data) => {
+                onSettled();
+                return data;
+            },
+            (reason) => {
+                onSettled();
+                throw reason;
+            }
+        );
+    }
+}
+```
+
+## 测试案例
+
+### 基本的链式调用
+
+```javascript
+// 基本的链式调用
+const promise = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('First promise resolved');
+  }, 1000);
+});
+
+promise.then((result) => {
+  console.log(result); // 输出: First promise resolved
+  return 'Second promise value';
+}).then((result) => {
+  console.log(result); // 输出: Second promise value
+});
+```
+
+### 返回新的 Promise 对象
+
+```javascript
+const promise2 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 2 resolved');
+  }, 1000);
+});
+
+promise2.then((result) => {
+  console.log(result); // 输出: Promise 2 resolved
+  return new MyPromise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('Nested Promise resolved');
+    }, 1000);
+  });
+}).then((result) => {
+  console.log(result); // 输出: Nested Promise resolved
+});
+
+```
+
+### 抛出错误
+
+```javascript
+const promise3 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 3 resolved');
+  }, 1000);
+});
+
+promise3.then((result) => {
+  console.log(result); // 输出: Promise 3 resolved
+  throw new Error('Custom error');
+}).catch((error) => {
+  console.error(error); // 输出: Error: Custom error
+});
+```
+
+### 返回新的 Promise 对象，并且处理错误
+
+```javascript
+const promise4 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 4 resolved');
+  }, 1000);
+});
+
+promise4.then((result) => {
+  console.log(result); // 输出: Promise 4 resolved
+  return new MyPromise((resolve, reject) => {
+    setTimeout(() => {
+      reject('Nested Promise rejected');
+    }, 1000);
+  });
+}).catch((error) => {
+  console.error(error); // 输出: Nested Promise rejected
+});
+```
+
+### 异步操作
+
+```JavaScript
+const promise5 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 5 resolved');
+  }, 1000);
+});
+
+promise5.then((result) => {
+  return new MyPromise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(result + ' with additional data');
+    }, 1000);
+  });
+}).then((result) => {
+  console.log(result); // 输出: Promise 5 resolved with additional data
+});
+```
+
+### 使用 all 方法
+
+```javascript
+const promise1 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 1 resolved');
+  }, 1000);
+});
+
+const promise2 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 2 resolved');
+  }, 2000);
+});
+
+const promise3 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 3 resolved');
+  }, 3000);
+});
+
+MyPromise.all([promise1, promise2, promise3]).then(values => {
+  console.log(values);
+}).catch(error => {
+  console.error(error);
+});
+
+```
+
+### 使用 any 方法
+
+```javascript
+const promise4 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    reject('Promise 4 rejected');
+  }, 1000);
+});
+
+const promise5 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 5 resolved');
+  }, 2000);
+});
+
+const promise6 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 6 resolved');
+  }, 3000);
+});
+
+MyPromise.any([promise4, promise5, promise6]).then(value => {
+  console.log(value);
+}).catch(errors => {
+  console.error(errors);
+});
+```
+
+### 使用 race 方法
+
+```javascript
+const promise7 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 7 resolved');
+  }, 1000);
+});
+
+const promise8 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 8 resolved');
+  }, 2000);
+});
+
+const promise9 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 9 resolved');
+  }, 3000);
+});
+
+MyPromise.race([promise7, promise8, promise9]).then(value => {
+  console.log(value);
+}).catch(error => {
+  console.error(error);
+});
+
+```
+
+### 使用 allSettled 方法
+
+```javascript
+const promise10 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 10 resolved');
+  }, 1000);
+});
+
+const promise11 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    reject('Promise 11 rejected');
+  }, 2000);
+});
+
+const promise12 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Promise 12 resolved');
+  }, 3000);
+});
+
+MyPromise.allSettled([promise10, promise11, promise12]).then(results => {
+  console.log(results);
+});
+```
+

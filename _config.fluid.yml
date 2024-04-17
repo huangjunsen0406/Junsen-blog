@@ -54,7 +54,7 @@ post:
       format: "{} 分钟"
     views:  # 阅读次数
       enable: true
-      source: "leancloud"  # 统计数据来源，可选：leancloud | busuanzi   注意不蒜子会间歇抽风
+      source: "busuanzi"  # 统计数据来源，可选：leancloud | busuanzi   注意不蒜子会间歇抽风
       format: "{} 次"
   comments:
     enable: true

@@ -16,16 +16,16 @@
   <meta name="author" content="Junsen">
   <meta name="keywords" content="Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs">
   
-    <meta name="description" content="宝塔使用webhook同步github代码 服务器设置git 先去 服务器上设置github用户名、邮箱、密码  然后获取rsa密钥用于代码拉取 12345678git config --global user.name &quot;xxx&quot;git config --global user.email &quot;xxx@qq.com&quot;git config --global u">
+    <meta name="description" content="宝塔使用webhook同步github代码 github设置access_token  设置权限 给git action把绑定token 服务器设置git 先去 服务器上设置github用户名、邮箱、密码  然后获取rsa密钥用于代码拉取 12345678git config --global user.name &quot;xxx&quot;git config --global user.em">
 <meta property="og:type" content="article">
 <meta property="og:title" content="宝塔使用webhook同步github代码">
 <meta property="og:url" content="https://junsen.online/2023/11/14/%E5%AE%9D%E5%A1%94%E4%BD%BF%E7%94%A8webhook%E5%90%8C%E6%AD%A5github%E4%BB%A3%E7%A0%81/index.html">
 <meta property="og:site_name" content="Junsen Blog">
-<meta property="og:description" content="宝塔使用webhook同步github代码 服务器设置git 先去 服务器上设置github用户名、邮箱、密码  然后获取rsa密钥用于代码拉取 12345678git config --global user.name &quot;xxx&quot;git config --global user.email &quot;xxx@qq.com&quot;git config --global u">
+<meta property="og:description" content="宝塔使用webhook同步github代码 github设置access_token  设置权限 给git action把绑定token 服务器设置git 先去 服务器上设置github用户名、邮箱、密码  然后获取rsa密钥用于代码拉取 12345678git config --global user.name &quot;xxx&quot;git config --global user.em">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://tuchuang.junsen.online//i/2023/11/14/t3fuv6-1.jpg">
 <meta property="article:published_time" content="2023-11-14T10:10:00.000Z">
-<meta property="article:modified_time" content="2024-04-17T13:42:46.818Z">
+<meta property="article:modified_time" content="2024-04-18T15:31:30.071Z">
 <meta property="article:author" content="Junsen">
 <meta property="article:tag" content="自动化">
 <meta name="twitter:card" content="summary_large_image">
@@ -230,7 +230,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          333 字
+          343 字
         
       </span>
     
@@ -293,13 +293,17 @@
               <div class="markdown-body">
                 
                 <p>宝塔使用webhook同步github代码</p>
+<h2 id="github设置access-token"><a href="#github设置access-token" class="headerlink" title="github设置access_token"></a>github设置access_token</h2><p><img src="https://tuchuang.junsen.online/i/2024/04/18/12h3kqt-2.png" srcset="/img/loading.gif" lazyload alt="image-20240418232642741"></p>
+<p><img src="https://tuchuang.junsen.online/i/2024/04/18/12i78oa-2.png" srcset="/img/loading.gif" lazyload alt="image-20240418232834618"></p>
+<h3 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h3><p><img src="https://tuchuang.junsen.online/i/2024/04/18/12ibc5r-2.png" srcset="/img/loading.gif" lazyload alt="image-20240418232853582"></p>
+<h2 id="给git-action把绑定token"><a href="#给git-action把绑定token" class="headerlink" title="给git action把绑定token"></a>给git action把绑定token</h2><p><img src="https://tuchuang.junsen.online/i/2024/04/18/12hnsji-2.png" srcset="/img/loading.gif" lazyload alt="image-20240418232743376"></p>
 <h3 id="服务器设置git"><a href="#服务器设置git" class="headerlink" title="服务器设置git"></a>服务器设置git</h3><ul>
 <li><p>先去 服务器上设置github用户名、邮箱、密码</p>
 </li>
 <li><p>然后获取rsa密钥用于代码拉取</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git config --global user.name <span class="hljs-string">&quot;xxx&quot;</span><br>git config --global user.email <span class="hljs-string">&quot;xxx@qq.com&quot;</span><br>git config --global user.password <span class="hljs-string">&quot;xxx&quot;</span><br><br><span class="hljs-comment">#生成公钥</span><br>ssh-keygen -t rsa<br><span class="hljs-comment">#获取公钥</span><br><span class="hljs-built_in">cat</span> ~/.ssh/id_rsa.pub<br></code></pre></td></tr></table></figure></li>
 </ul>
-<h2 id="宝塔软件商店搜索-webhook"><a href="#宝塔软件商店搜索-webhook" class="headerlink" title="宝塔软件商店搜索 webhook"></a>宝塔软件商店搜索 webhook</h2><p><img src="https://tuchuang.junsen.online//i/2023/11/14/stzy0l-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114174342741"></p>
+<h2 id="宝塔软件商店搜索-webhook"><a href="#宝塔软件商店搜索-webhook" class="headerlink" title="宝塔软件商店搜索 webhook"></a>宝塔软件商店搜索 webhook</h2><p><img src="https://tuchuang.junsen.online/i/2024/04/18/12iy9j2-2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <ul>
 <li>点击设置添加hook，名称随便填，脚本复制以下的改下仓库地址和部署目录</li>
 <li><strong>注意点：</strong> 仓库的代码需要是编译后的代码。可以利用git action自动编译</li>
@@ -308,11 +312,11 @@
 
 <ul>
 <li><p>获取添加后的 hook地址去github仓库里的设置点击webhook添加宝塔生成的hook地址，填完后点击add webhook即可，第一次需要点击下宝塔webhook的测试按钮</p>
-<p><img src="https://tuchuang.junsen.online//i/2023/11/14/t01js2-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114175358845"></p>
+<p><img src="https://tuchuang.junsen.online/i/2024/04/18/12jbm3x-2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 </li>
 </ul>
 <p><img src="https://tuchuang.junsen.online//i/2023/11/14/t0yp1j-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114175513385"></p>
-<p><img src="https://tuchuang.junsen.online//i/2023/11/14/t111g1-1.png" srcset="/img/loading.gif" lazyload alt="image-20231114175524611"></p>
+<p><img src="https://tuchuang.junsen.online/i/2024/04/18/12iucss-2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 
                 
               </div>

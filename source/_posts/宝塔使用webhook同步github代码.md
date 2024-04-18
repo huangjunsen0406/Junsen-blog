@@ -9,7 +9,19 @@ date: 2023-11-14 18:10:00
 
 宝塔使用webhook同步github代码
 
+## github设置access_token
 
+![image-20240418232642741](https://tuchuang.junsen.online/i/2024/04/18/12h3kqt-2.png)
+
+![image-20240418232834618](https://tuchuang.junsen.online/i/2024/04/18/12i78oa-2.png)
+
+### 设置权限
+
+![image-20240418232853582](https://tuchuang.junsen.online/i/2024/04/18/12ibc5r-2.png)
+
+## 给git action把绑定token
+
+![image-20240418232743376](https://tuchuang.junsen.online/i/2024/04/18/12hnsji-2.png)
 
 ### 服务器设置git
 
@@ -32,7 +44,7 @@ date: 2023-11-14 18:10:00
 
 ## 宝塔软件商店搜索 webhook
 
-![image-20231114174342741](https://tuchuang.junsen.online//i/2023/11/14/stzy0l-1.png)
+![img](https://tuchuang.junsen.online/i/2024/04/18/12iy9j2-2.png)
 
 - 点击设置添加hook，名称随便填，脚本复制以下的改下仓库地址和部署目录
 - **注意点：** 仓库的代码需要是编译后的代码。可以利用git action自动编译
@@ -76,8 +88,8 @@ fi
 
 - 获取添加后的 hook地址去github仓库里的设置点击webhook添加宝塔生成的hook地址，填完后点击add webhook即可，第一次需要点击下宝塔webhook的测试按钮
 
-  ![image-20231114175358845](https://tuchuang.junsen.online//i/2023/11/14/t01js2-1.png)
+  ![img](https://tuchuang.junsen.online/i/2024/04/18/12jbm3x-2.png)
 
 ![image-20231114175513385](https://tuchuang.junsen.online//i/2023/11/14/t0yp1j-1.png)
 
-![image-20231114175524611](https://tuchuang.junsen.online//i/2023/11/14/t111g1-1.png)
+![img](https://tuchuang.junsen.online/i/2024/04/18/12iucss-2.png)

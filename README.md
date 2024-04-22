@@ -192,5 +192,3 @@ DB：mysql+redis
 
 项目链接：https://gitee.com/huang-jun-sen/js-encode-fe-spec
 
-![image](https://tuchuang.junsen.online/i/2024/04/22/nmvf1n-2.png)
-

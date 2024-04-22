@@ -5,7 +5,7 @@
 >    3. 个人掘金地址：https://juejin.cn/user/747323638945111/posts
 >    4. 个人博客：https://junsen.online/
 >       1. 个人博客访问量:3135
->       2. 总访客数:2449
+>       2. 总访客数
 >
 
 ## 小程序项目
@@ -192,5 +192,5 @@ DB：mysql+redis
 
 项目链接：https://gitee.com/huang-jun-sen/js-encode-fe-spec
 
-![image](https://tuchuang.junsen.online/i/2024/04/22/njf92e.png)
+![image](https://tuchuang.junsen.online/i/2024/04/22/nmvf1n-2.png)
 

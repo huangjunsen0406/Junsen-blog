@@ -3,7 +3,9 @@
 >    1. 个人码云地址: [https://gitee.com/huang-jun-sen](https://gitee.com/JSshuai2015)
 >    2. 个人github地址：https://github.com/huang-junsen
 >    3. 个人掘金地址：https://juejin.cn/user/747323638945111/posts
->   4. 个人博客：https://junsen.online/
+>    4. 个人博客：https://junsen.online/
+>       1. 个人博客访问量:3135
+>       2. 总访客数:2449
 >
 
 ## 小程序项目
@@ -183,3 +185,12 @@ DB：mysql+redis
 #### FlyingChessV2小游戏
 
 ![WeChat_20240422140949](https://tuchuang.junsen.online/i/2024/04/22/nbtq0h.gif)
+
+## 工程化基建脚手架
+
+#### js-encode-fe-spec
+
+项目链接：https://gitee.com/huang-jun-sen/js-encode-fe-spec
+
+![image](https://tuchuang.junsen.online/i/2024/04/22/njf92e.png)
+

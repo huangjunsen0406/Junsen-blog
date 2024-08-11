@@ -71,6 +71,10 @@ comment: 'valine'
 >   - 在职期间引入了 vue3、ts、web3d、项目工程化规范，推动公司技术更新迭代扩展公司业务领域
 >   - 产出Vue不同项目的脚手架基建、例如Vue2、Vue3 的 PC 端模板与 Mobile 端模板
 
+
+
+![8b16cfdc4df77ff4f6f0a9ef280f021](https://tuchuang.junsen.online/i/2024/08/11/suk0qi.jpg)
+
 {% note success %}
     深圳南电云商有限公司 - 前端开发工程师
 {% endnote %}

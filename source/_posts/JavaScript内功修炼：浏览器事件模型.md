@@ -446,3 +446,6 @@ window.history.forward(); // 下一页
 
 - `screen.width` 和 `screen.height`: 屏幕的宽度和高度。
 - `screen.availWidth` 和 `screen.availHeight`: 可用屏幕的宽度和高度（不包括任务栏等）。
+
+
+

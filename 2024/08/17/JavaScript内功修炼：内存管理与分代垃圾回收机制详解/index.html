@@ -19,7 +19,7 @@
     <meta name="description" content="JavaScript内功修炼：内存管理与分代垃圾回收机制详解JavaScript引擎的由来 JavaScript引擎的发展历史可以追溯到1995年，当时Netscape公司在其Netscape Navigator浏览器中引入了一种名为LiveScript的脚本语言。随后，这种语言被更名为JavaScript。随着互联网的快速发展，JavaScript迅速成为Web开发的核心语言，用于为网页添加交互">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JavaScript内功修炼：内存管理与分代垃圾回收机制详解">
-<meta property="og:url" content="https://junsen.online/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html">
+<meta property="og:url" content="https://junsen.online/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%B8%8E%E5%88%86%E4%BB%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/index.html">
 <meta property="og:site_name" content="Junsen Blog">
 <meta property="og:description" content="JavaScript内功修炼：内存管理与分代垃圾回收机制详解JavaScript引擎的由来 JavaScript引擎的发展历史可以追溯到1995年，当时Netscape公司在其Netscape Navigator浏览器中引入了一种名为LiveScript的脚本语言。随后，这种语言被更名为JavaScript。随着互联网的快速发展，JavaScript迅速成为Web开发的核心语言，用于为网页添加交互">
 <meta property="og:locale" content="zh_CN">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/249beu-2.jpg">
 <meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/2hfrv3-2.jpg">
 <meta property="article:published_time" content="2024-08-17T18:16:00.000Z">
-<meta property="article:modified_time" content="2024-08-17T18:28:34.861Z">
+<meta property="article:modified_time" content="2024-08-17T18:32:51.763Z">
 <meta property="article:author" content="Junsen">
 <meta property="article:tag" content="前端笔记">
 <meta name="twitter:card" content="summary_large_image">
@@ -1033,7 +1033,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>JavaScript内功修炼：内存管理与分代垃圾回收机制详解</div>
-      <div>https://junsen.online/2024/08/17/JavaScript内功修炼：垃圾回收/</div>
+      <div>https://junsen.online/2024/08/17/JavaScript内功修炼：内存管理与分代垃圾回收机制详解/</div>
     </div>
     <div class="license-meta">
       
@@ -1102,8 +1102,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://junsen.online/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/';
-          this.page.identifier = '/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/';
+          this.page.url = 'https://junsen.online/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%B8%8E%E5%88%86%E4%BB%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/';
+          this.page.identifier = '/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%B8%8E%E5%88%86%E4%BB%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

@@ -1,0 +1,1418 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Junsen">
+  <meta name="keywords" content="Junsen,Blog,个人记录,TypeScript,JavaScript,CSS,HTML,Nodejs">
+  
+    <meta name="description" content="JavaScript内功修炼：内存管理与分代垃圾回收机制详解JavaScript引擎的由来 JavaScript引擎的发展历史可以追溯到1995年，当时Netscape公司在其Netscape Navigator浏览器中引入了一种名为LiveScript的脚本语言。随后，这种语言被更名为JavaScript。随着互联网的快速发展，JavaScript迅速成为Web开发的核心语言，用于为网页添加交互">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript内功修炼：内存管理与分代垃圾回收机制详解">
+<meta property="og:url" content="https://junsen.online/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html">
+<meta property="og:site_name" content="Junsen Blog">
+<meta property="og:description" content="JavaScript内功修炼：内存管理与分代垃圾回收机制详解JavaScript引擎的由来 JavaScript引擎的发展历史可以追溯到1995年，当时Netscape公司在其Netscape Navigator浏览器中引入了一种名为LiveScript的脚本语言。随后，这种语言被更名为JavaScript。随着互联网的快速发展，JavaScript迅速成为Web开发的核心语言，用于为网页添加交互">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/17/10e311p-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/17/10ysp1i-2.jpg">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/17/10k3doc-2.jpg">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/17/130mmeg-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/3tp5i-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/3woi2-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/48a1v-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/1o6fg0-2.jpg">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/1ucy7k-2.png">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/23vd66-2.jpg">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/249beu-2.jpg">
+<meta property="og:image" content="https://tuchuang.junsen.online/i/2024/08/18/2hfrv3-2.jpg">
+<meta property="article:published_time" content="2024-08-17T18:16:00.000Z">
+<meta property="article:modified_time" content="2024-08-17T18:28:34.861Z">
+<meta property="article:author" content="Junsen">
+<meta property="article:tag" content="前端笔记">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tuchuang.junsen.online/i/2024/08/17/10e311p-2.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>JavaScript内功修炼：内存管理与分代垃圾回收机制详解 - Junsen Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"junsen.online","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Junsen Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JavaScript内功修炼：内存管理与分代垃圾回收机制详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Junsen
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-18 02:16" pubdate>
+          星期日, 八月 18日 2024, 2:16 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          123 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">JavaScript内功修炼：内存管理与分代垃圾回收机制详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="JavaScript内功修炼：内存管理与分代垃圾回收机制详解"><a href="#JavaScript内功修炼：内存管理与分代垃圾回收机制详解" class="headerlink" title="JavaScript内功修炼：内存管理与分代垃圾回收机制详解"></a>JavaScript内功修炼：内存管理与分代垃圾回收机制详解</h1><h2 id="JavaScript引擎的由来"><a href="#JavaScript引擎的由来" class="headerlink" title="JavaScript引擎的由来"></a>JavaScript引擎的由来</h2><blockquote>
+<p>JavaScript引擎的发展历史可以追溯到1995年，当时Netscape公司在其Netscape Navigator浏览器中引入了一种名为LiveScript的脚本语言。随后，这种语言被更名为JavaScript。随着互联网的快速发展，JavaScript迅速成为Web开发的核心语言，用于为网页添加交互性和动态内容。</p>
+<p>JavaScript引擎的由来和发展是与Web的发展密不可分的。自1995年JavaScript诞生以来，JavaScript引擎经历了从简单的解释器到复杂的即时编译引擎的演变过程。这些引擎的不断进化，推动了Web技术的发展，使现代Web应用具备了丰富的交互性和高效的性能。今天，V8、JavaScriptCore、SpiderMonkey和Chakra等引擎，继续在不断优化和创新，为开发者提供强大的工具，以应对未来Web开发的挑战。</p>
+</blockquote>
+<h3 id="1-JavaScript的诞生与初期发展"><a href="#1-JavaScript的诞生与初期发展" class="headerlink" title="1. JavaScript的诞生与初期发展"></a><strong>1. JavaScript的诞生与初期发展</strong></h3><ul>
+<li><strong>JavaScript的起源：</strong><ul>
+<li>1995年，Netscape公司雇佣了Brendan Eich，他在短短10天内开发了JavaScript的第一个版本。最初，JavaScript的设计目的是为网页开发者提供一种简单的脚本语言，使他们能够轻松地为网页添加动态行为。</li>
+<li>1996年，Microsoft公司在其Internet Explorer浏览器中推出了JScript，这是一个与JavaScript兼容的版本。为了避免专利纠纷，Microsoft将其命名为JScript。</li>
+</ul>
+</li>
+<li><strong>早期的JavaScript引擎：</strong><ul>
+<li><strong>SpiderMonkey（1995）：</strong> Brendan Eich为Netscape Navigator编写的第一个JavaScript引擎，被称为SpiderMonkey。它是JavaScript的初代引擎，负责将JavaScript代码解析并执行在Web浏览器中。</li>
+<li><strong>JScript引擎（1996）：</strong> Microsoft开发的JScript引擎，首次集成在Internet Explorer 3.0中，使得JavaScript在浏览器领域得到更广泛的应用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-JavaScript引擎的进化"><a href="#2-JavaScript引擎的进化" class="headerlink" title="2. JavaScript引擎的进化"></a><strong>2. JavaScript引擎的进化</strong></h3><blockquote>
+<p>随着Web应用的复杂性不断增加，JavaScript引擎也在不断进化，以提高代码执行效率并支持更多的语言特性。</p>
+</blockquote>
+<ul>
+<li><strong>Rhino（1997）：</strong><ul>
+<li>由Mozilla基金会开发，Rhino是第一个JavaScript引擎的Java实现版本。它主要用于服务器端应用程序中，特别是在Java应用中嵌入JavaScript脚本。</li>
+</ul>
+</li>
+<li><strong>JavaScriptCore（2003）：</strong><ul>
+<li>Apple在开发Safari浏览器时，引入了JavaScriptCore引擎，这是WebKit浏览器引擎的一部分。JavaScriptCore的引入标志着JavaScript引擎从单纯的解释执行向更高效的字节码执行模式过渡。</li>
+</ul>
+</li>
+<li><strong>V8引擎（2008）：</strong><ul>
+<li>由Google开发的V8引擎是JavaScript引擎发展中的一个重要里程碑。V8引擎使用即时编译（JIT）技术，将JavaScript代码直接编译为机器码，大幅提升了代码的执行速度。V8引擎最初用于Google Chrome浏览器，后来被广泛应用于Node.js中。</li>
+</ul>
+</li>
+<li><strong>SquirrelFish&#x2F;Nitro（2008）：</strong><ul>
+<li>Apple为Safari浏览器开发了SquirrelFish引擎，并在随后的版本中进一步优化为Nitro引擎。这些引擎采用字节码解释器，显著提升了JavaScript代码的执行效率。</li>
+</ul>
+</li>
+<li><strong>Chakra（2010）：</strong><ul>
+<li>Microsoft为Internet Explorer 9开发了Chakra引擎，使用了类似V8的JIT编译技术，优化了JavaScript的执行速度。后来，Chakra引擎也用于Microsoft Edge浏览器。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-JavaScript引擎的现代化"><a href="#3-JavaScript引擎的现代化" class="headerlink" title="3. JavaScript引擎的现代化"></a><strong>3. JavaScript引擎的现代化</strong></h3><blockquote>
+<p>随着JavaScript在Web开发中的地位越来越重要，现代JavaScript引擎在性能、内存管理和安全性等方面进行了大量优化。</p>
+</blockquote>
+<ul>
+<li><strong>多线程与并行处理：</strong><ul>
+<li>现代JavaScript引擎如V8和SpiderMonkey，采用了多线程和并行处理技术，允许在后台进行垃圾回收和JIT编译，从而最大限度地减少对主线程的影响，提升页面响应速度。</li>
+</ul>
+</li>
+<li><strong>WebAssembly的支持：</strong><ul>
+<li>为了应对对性能要求更高的Web应用，JavaScript引擎开始支持WebAssembly（Wasm），一种低级别的二进制格式，允许开发者在浏览器中运行接近本机速度的代码。</li>
+</ul>
+</li>
+<li><strong>持续的性能优化：</strong><ul>
+<li>现代JavaScript引擎不断优化其JIT编译器和垃圾回收机制，以应对日益复杂的Web应用，并提供更高的执行性能和更低的内存占用。</li>
+</ul>
+</li>
+</ul>
+<h2 id="为什么需要引擎它与垃圾回收之间的关联-？"><a href="#为什么需要引擎它与垃圾回收之间的关联-？" class="headerlink" title="为什么需要引擎它与垃圾回收之间的关联 ？"></a>为什么需要引擎它与垃圾回收之间的关联 ？</h2><blockquote>
+<p>在JavaScript代码执行的过程中，内存管理是一个非常重要的方面。JavaScript引擎不仅负责代码的执行，还必须管理程序的内存使用，确保不再使用的内存能够被及时回收，以防止内存泄漏和系统性能的下降。这个内存管理的关键机制就是<strong>垃圾回收（Garbage Collection）</strong>。</p>
+</blockquote>
+<h3 id="1-内存管理的需求："><a href="#1-内存管理的需求：" class="headerlink" title="1. 内存管理的需求："></a><strong>1. 内存管理的需求：</strong></h3><ul>
+<li><strong>自动内存管理：</strong> 与C或C++等手动管理内存的语言不同，JavaScript的内存管理是自动化的。开发者无需手动分配或释放内存，JavaScript引擎会自动管理对象的内存分配和释放。这大大降低了编程复杂性，同时也避免了常见的内存管理错误，如内存泄漏或悬空指针。</li>
+</ul>
+<h3 id="2-垃圾回收的工作原理："><a href="#2-垃圾回收的工作原理：" class="headerlink" title="2. 垃圾回收的工作原理："></a><strong>2. 垃圾回收的工作原理：</strong></h3><ul>
+<li><strong>跟踪与回收：</strong> JavaScript引擎中的垃圾回收器（如V8的Orinoco）会跟踪内存中的所有对象，并识别那些不再被使用的对象。在大多数情况下，垃圾回收器使用“标记-清除”（Mark-and-Sweep）或“标记-整理”（Mark-and-Compact）算法来执行这些任务。</li>
+<li><strong>内存回收的自动化：</strong> 垃圾回收器定期扫描内存中的对象，并回收那些不再被引用的对象所占用的内存。这一过程通常在引擎的后台进行，以尽量减少对代码执行的影响。</li>
+</ul>
+<h3 id="3-引擎和垃圾回收的协同工作："><a href="#3-引擎和垃圾回收的协同工作：" class="headerlink" title="3. 引擎和垃圾回收的协同工作："></a><strong>3. 引擎和垃圾回收的协同工作：</strong></h3><ul>
+<li><strong>性能平衡：</strong> JavaScript引擎不仅要快速执行代码，还要在不影响性能的情况下进行垃圾回收。垃圾回收是一个计算密集型的任务，但如果不及时回收内存，可能会导致内存不足或应用程序性能下降。因此，现代引擎（如V8）通过增量垃圾回收、并行垃圾回收等技术，尽量减少垃圾回收对代码执行的中断。</li>
+<li><strong>优化与去优化：</strong> 当JavaScript引擎优化代码时，它假设一定的内存模型和引用模式。如果这些假设在运行时被打破，引擎可能需要去优化代码，同时重新考虑内存管理策略。这就要求垃圾回收器和引擎紧密协作，动态调整内存管理和代码执行策略。</li>
+</ul>
+<h2 id="Nodejs整体架构"><a href="#Nodejs整体架构" class="headerlink" title="Nodejs整体架构"></a>Nodejs整体架构</h2><p><img src="https://tuchuang.junsen.online/i/2024/08/17/10e311p-2.png" srcset="/img/loading.gif" lazyload alt="image-20240817220034250"></p>
+<h3 id="1-Node-js标准库（Node-standard-lib）"><a href="#1-Node-js标准库（Node-standard-lib）" class="headerlink" title="1. Node.js标准库（Node standard lib）"></a><strong>1. Node.js标准库（Node standard lib）</strong></h3><blockquote>
+<p>Node.js的标准库提供了丰富的API，用于处理文件系统、网络请求、流、缓冲区等常见任务。开发者可以直接使用这些标准库来构建应用程序，而无需手动处理底层细节。它是构建Node.js应用的核心组件，简化了开发过程，提供了统一的接口来操作各种系统资源。</p>
+</blockquote>
+<h3 id="2-绑定层（Binding）"><a href="#2-绑定层（Binding）" class="headerlink" title="2. 绑定层（Binding）"></a><strong>2. 绑定层（Binding）</strong></h3><blockquote>
+<p>绑定层是Node.js中一个关键部分，它负责把Node.js的JavaScript代码与底层的C&#x2F;C++代码连接起来。简单来说，绑定层就像是一个“翻译官”，它让JavaScript代码可以直接调用底层系统功能，比如文件读写、网络通信等，这些功能通常是用C&#x2F;C++编写的，因为这些语言在处理这些任务时非常高效。</p>
+<p>通过绑定层，Node.js能够充分利用这些底层功能的高性能，并把它们包装成容易使用的JavaScript接口，供开发者调用。这种设计让Node.js既保持了JavaScript的简单易用性，又拥有了接近底层系统的强大性能。</p>
+</blockquote>
+<h3 id="3-V8引擎"><a href="#3-V8引擎" class="headerlink" title="3. V8引擎"></a><strong>3. V8引擎</strong></h3><blockquote>
+<p>V8是Google开发的JavaScript引擎，它将JavaScript代码编译成机器码，并高效执行。Node.js通过使用V8引擎来快速运行JavaScript代码，确保应用具备高性能。</p>
+</blockquote>
+<h3 id="4-libuv"><a href="#4-libuv" class="headerlink" title="4. libuv"></a><strong>4. libuv</strong></h3><blockquote>
+<p>libuv是一个跨平台的支持库，负责提供事件驱动的异步I&#x2F;O操作、线程池管理、文件系统访问以及TCP&#x2F;UDP网络通信等功能。它是Node.js异步I&#x2F;O模型的核心，负责管理事件循环和线程池，从而使Node.js能够在不阻塞主线程的情况下，高效地处理大量并发连接。</p>
+</blockquote>
+<h3 id="5-C-ares"><a href="#5-C-ares" class="headerlink" title="5. C-ares"></a><strong>5. C-ares</strong></h3><blockquote>
+<p>C-ares是一个异步DNS解析库，专门用于处理DNS查询操作。Node.js利用C-ares来异步处理DNS请求，确保这些操作不会阻塞主线程。C-ares的作用在于让Node.js能够高效地处理DNS查询，对于构建高性能网络应用至关重要，因为它避免了网络操作中的阻塞问题。</p>
+</blockquote>
+<h3 id="6-OpenSSL"><a href="#6-OpenSSL" class="headerlink" title="6. OpenSSL"></a><strong>6. OpenSSL</strong></h3><blockquote>
+<p>OpenSSL是一个用于安全通信的加密库，负责实现SSL&#x2F;TLS协议。Node.js使用OpenSSL来加密网络通信，确保数据传输的安全性。OpenSSL为Node.js提供了加密功能，支持HTTPS和其他安全通信协议，是保障Node.js应用安全性的核心组件。</p>
+</blockquote>
+<h2 id="V8-引擎的简单介绍"><a href="#V8-引擎的简单介绍" class="headerlink" title="V8 引擎的简单介绍"></a>V8 引擎的简单介绍</h2><p><img src="https://tuchuang.junsen.online/i/2024/08/17/10ysp1i-2.jpg" srcset="/img/loading.gif" lazyload alt="1723905317795"></p>
+<h3 id="1-Heap-Memory-Allocation"><a href="#1-Heap-Memory-Allocation" class="headerlink" title="1. Heap Memory Allocation"></a>1. <strong>Heap Memory Allocation</strong></h3><ul>
+<li><strong>堆内存分配</strong>：V8引擎负责管理和分配内存空间，主要通过堆（Heap）来分配对象和数据的内存。JavaScript中的所有对象和引用类型数据都在堆内存中存储。</li>
+</ul>
+<h3 id="2-Call-Stack-Execution-Context"><a href="#2-Call-Stack-Execution-Context" class="headerlink" title="2. Call Stack Execution Context"></a>2. <strong>Call Stack Execution Context</strong></h3><ul>
+<li><strong>调用栈执行上下文</strong>：这是V8处理函数调用和执行顺序的地方。每当一个函数被调用时，一个新的执行上下文被创建并压入调用栈，执行完成后会弹出调用栈。这个过程确保了JavaScript代码的顺序执行。</li>
+</ul>
+<h3 id="3-Orinoco-Garbage-Collector"><a href="#3-Orinoco-Garbage-Collector" class="headerlink" title="3. Orinoco Garbage Collector"></a>3. <strong>Orinoco Garbage Collector</strong></h3><ul>
+<li><strong>Orinoco垃圾回收器</strong>：这是V8引擎中的垃圾回收系统，负责自动回收不再使用的内存。Orinoco使用了一系列优化策略，如增量标记和并行清理，以最小化垃圾回收对程序性能的影响。</li>
+</ul>
+<h3 id="4-TurboFan-Optimization-Compiler"><a href="#4-TurboFan-Optimization-Compiler" class="headerlink" title="4. TurboFan Optimization Compiler"></a>4. <strong>TurboFan Optimization Compiler</strong></h3><ul>
+<li><strong>TurboFan优化编译器</strong>：这是V8中的JIT（即时）编译器，专门负责将热点代码编译为高效的机器码。TurboFan会根据运行时收集的数据进行优化，提高代码的执行效率。</li>
+</ul>
+<h3 id="5-Ignition-JS-Interpreter"><a href="#5-Ignition-JS-Interpreter" class="headerlink" title="5. Ignition JS Interpreter"></a>5. <strong>Ignition JS Interpreter</strong></h3><ul>
+<li><strong>Ignition JavaScript解释器</strong>：Ignition是V8的解释器，负责将JavaScript代码解析为字节码并执行。它是V8中最先执行JavaScript代码的组件，负责快速启动代码的执行。</li>
+</ul>
+<h3 id="6-Liftoff-WebAssembly"><a href="#6-Liftoff-WebAssembly" class="headerlink" title="6. Liftoff WebAssembly"></a>6. <strong>Liftoff WebAssembly</strong></h3><ul>
+<li><strong>Liftoff WebAssembly编译器</strong>：Liftoff是V8引擎中专门为WebAssembly设计的编译器，负责将WebAssembly字节码编译为机器码并执行。WebAssembly是一种与JavaScript并行的低级语言，主要用于性能要求较高的应用场景。</li>
+</ul>
+<h3 id="V8-的处理过程"><a href="#V8-的处理过程" class="headerlink" title="V8 的处理过程"></a>V8 的处理过程</h3><p><img src="https://tuchuang.junsen.online/i/2024/08/17/10k3doc-2.jpg" srcset="/img/loading.gif" lazyload alt="1723903849717"></p>
+<h4 id="1-代码解析（Parsing）"><a href="#1-代码解析（Parsing）" class="headerlink" title="1. 代码解析（Parsing）"></a><strong>1. 代码解析（Parsing）</strong></h4><p>始于从网络中获取 JavaScript 代码，代码进入<strong>解析器（Parser）</strong>，被解析为<strong>抽象语法树（AST）</strong>。AST是代码的结构化表示，提供了代码的语法和逻辑结构。</p>
+<h4 id="2-字节码生成与执行（Bytecode-Generation-and-Execution）"><a href="#2-字节码生成与执行（Bytecode-Generation-and-Execution）" class="headerlink" title="2. 字节码生成与执行（Bytecode Generation and Execution）"></a><strong>2. 字节码生成与执行（Bytecode Generation and Execution）</strong></h4><p>AST生成后，V8引擎的Ignition解释器将其转换为字节码。字节码是中间形式，介于源代码和机器码之间，适合在虚拟机中执行。 一旦字节码生成，V8引擎开始执行这些字节码。执行过程中，V8会收集代码的运行数据，包括类型信息和执行路径，这些数据将用于后续的优化步骤。</p>
+<h4 id="3-动态优化（Dynamic-Optimization）"><a href="#3-动态优化（Dynamic-Optimization）" class="headerlink" title="3. 动态优化（Dynamic Optimization）"></a><strong>3. 动态优化（Dynamic Optimization）</strong></h4><p>在字节码执行的过程中，V8引擎会识别出热点代码——那些被频繁执行的代码段。引擎的<strong>TurboFan优化编译器</strong>对热点代码进行优化，生成更高效的机器码，提升代码执行速度。如果运行时的某些假设被证明不成立，V8引擎会触发<strong>去优化（Deoptimization）</strong>过程，将执行流程退回到字节码执行阶段，确保代码正确运行。</p>
+<h2 id="为何需要垃圾回收？"><a href="#为何需要垃圾回收？" class="headerlink" title="为何需要垃圾回收？"></a>为何需要垃圾回收？</h2><blockquote>
+<p>在JavaScript代码执行的过程中，内存管理是一个非常重要的方面。JavaScript引擎不仅负责代码的执行，还必须管理程序的内存使用，确保不再使用的内存能够被及时回收，以防止内存泄漏和系统性能的下降。这个内存管理的关键机制就是<strong>垃圾回收（Garbage Collection）</strong>。</p>
+</blockquote>
+<h3 id="1-内存管理的需求：-1"><a href="#1-内存管理的需求：-1" class="headerlink" title="1. 内存管理的需求："></a><strong>1. 内存管理的需求：</strong></h3><ul>
+<li><strong>自动内存管理：</strong> 与C或C++等手动管理内存的语言不同，JavaScript的内存管理是自动化的。开发者无需手动分配或释放内存，JavaScript引擎会自动管理对象的内存分配和释放。这大大降低了编程复杂性，同时也避免了常见的内存管理错误，如内存泄漏或悬空指针。</li>
+</ul>
+<h3 id="2-垃圾回收的工作原理：-1"><a href="#2-垃圾回收的工作原理：-1" class="headerlink" title="2. 垃圾回收的工作原理："></a><strong>2. 垃圾回收的工作原理：</strong></h3><ul>
+<li><strong>跟踪与回收：</strong> JavaScript引擎中的垃圾回收器（如V8的Orinoco）会跟踪内存中的所有对象，并识别那些不再被使用的对象。在大多数情况下，垃圾回收器使用“标记-清除”（Mark-and-Sweep）或“标记-整理”（Mark-and-Compact）算法来执行这些任务。</li>
+<li><strong>内存回收的自动化：</strong> 垃圾回收器定期扫描内存中的对象，并回收那些不再被引用的对象所占用的内存。这一过程通常在引擎的后台进行，以尽量减少对代码执行的影响。</li>
+</ul>
+<h3 id="3-引擎和垃圾回收的协同工作：-1"><a href="#3-引擎和垃圾回收的协同工作：-1" class="headerlink" title="3. 引擎和垃圾回收的协同工作："></a><strong>3. 引擎和垃圾回收的协同工作：</strong></h3><ul>
+<li><strong>性能平衡：</strong> JavaScript引擎不仅要快速执行代码，还要在不影响性能的情况下进行垃圾回收。垃圾回收是一个计算密集型的任务，但如果不及时回收内存，可能会导致内存不足或应用程序性能下降。因此，现代引擎（如V8）通过增量垃圾回收、并行垃圾回收等技术，尽量减少垃圾回收对代码执行的中断。</li>
+<li><strong>优化与去优化：</strong> 当JavaScript引擎优化代码时，它假设一定的内存模型和引用模式。如果这些假设在运行时被打破，引擎可能需要去优化代码，同时重新考虑内存管理策略。这就要求垃圾回收器和引擎紧密协作，动态调整内存管理和代码执行策略。</li>
+</ul>
+<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><h3 id="可达性"><a href="#可达性" class="headerlink" title="可达性"></a>可达性</h3><blockquote>
+<p>在垃圾回收的过程中，“可达性”是判断对象是否可以被回收的关键概念。可达性指的是对象是否能够通过某种路径（如直接引用或间接引用）从“根对象”访问到。根对象包括全局变量、当前函数的局部变量和参数等，这些对象是垃圾回收器判定为“可达”的起点。</p>
+<p>只要一个对象能够通过引用链从根对象访问到，它就是“活”的，并且不会被回收。根对象的来源不仅限于栈上的变量，还包括全局变量、闭包中捕获的变量、浏览器中的DOM元素引用等。垃圾回收器会定期检查这些引用链，以识别那些没有被任何可达对象引用的“孤立”对象，并将其从内存中回收。这种机制有效防止内存泄漏，确保程序的高效运行。</p>
+</blockquote>
+<h4 id="全局变量的引用链"><a href="#全局变量的引用链" class="headerlink" title="全局变量的引用链"></a>全局变量的引用链</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> globalObj = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Global Object&quot;</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>解释</strong>：<code>globalObj</code>是一个全局变量，它是根对象的一部分。由于它直接被代码引用，并且没有任何途径使它变得不可达，因此它不会被垃圾回收。</li>
+</ul>
+<h4 id="函数内部的局部变量"><a href="#函数内部的局部变量" class="headerlink" title="函数内部的局部变量"></a>函数内部的局部变量</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createObject</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">let</span> localObj = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Local Object&quot;</span> &#125;;<br>    <span class="hljs-keyword">return</span> localObj;<br>&#125;<br><br><span class="hljs-keyword">let</span> obj = <span class="hljs-title function_">createObject</span>();<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>解释</strong>：<code>localObj</code>是函数内部的局部变量，但因为它被返回并赋值给了全局变量<code>obj</code>，所以即使函数执行完毕，<code>localObj</code>依然是可达的，因为它可以通过<code>obj</code>引用链访问到。</li>
+</ul>
+<h4 id="通过对象引用保持可达性"><a href="#通过对象引用保持可达性" class="headerlink" title="通过对象引用保持可达性"></a>通过对象引用保持可达性</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> obj1 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 1&quot;</span> &#125;;<br><span class="hljs-keyword">let</span> obj2 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 2&quot;</span>, <span class="hljs-attr">ref</span>: obj1 &#125;;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>解释</strong>：<code>localObj</code>是函数内部的局部变量，但因为它被返回并赋值给了全局变量<code>obj</code>，所以即使函数执行完毕，<code>localObj</code>依然是可达的，因为它可以通过<code>obj</code>引用链访问到。</li>
+</ul>
+<h4 id="闭包中的变量引用"><a href="#闭包中的变量引用" class="headerlink" title="闭包中的变量引用"></a>闭包中的变量引用</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">outerFunction</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">let</span> closureObj = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Closure Object&quot;</span> &#125;;<br>    <br>    <span class="hljs-keyword">function</span> <span class="hljs-title function_">innerFunction</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(closureObj.<span class="hljs-property">name</span>);<br>    &#125;<br>    <br>    <span class="hljs-keyword">return</span> innerFunction;<br>&#125;<br><br><span class="hljs-keyword">let</span> func = <span class="hljs-title function_">outerFunction</span>();<br><span class="hljs-title function_">func</span>();<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>解释</strong>：在这个例子中，<code>closureObj</code>是<code>outerFunction</code>内部的局部变量，但由于<code>innerFunction</code>闭包引用了<code>closureObj</code>，即使<code>outerFunction</code>执行完毕，<code>closureObj</code>仍然保持可达性，并不会被垃圾回收。</li>
+</ul>
+<h4 id="DOM元素的引用"><a href="#DOM元素的引用" class="headerlink" title="DOM元素的引用"></a>DOM元素的引用</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> element = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;myElement&quot;</span>);<br><span class="hljs-keyword">let</span> obj = &#123; <span class="hljs-attr">elementRef</span>: element &#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>解释</strong>：<code>element</code>是一个DOM元素，它被<code>obj</code>对象的<code>elementRef</code>属性引用。因此，只要<code>obj</code>是可达的，那么DOM元素<code>element</code>也不会被垃圾回收。</p>
+<h4 id="可达示例"><a href="#可达示例" class="headerlink" title="可达示例"></a>可达示例</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">exampleFunction</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">let</span> obj1 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 1&quot;</span> &#125;;  <span class="hljs-comment">// 局部变量 obj1 是可达的</span><br>    <span class="hljs-keyword">let</span> obj2 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 2&quot;</span>, <span class="hljs-attr">ref</span>: obj1 &#125;;  <span class="hljs-comment">// obj2 引用 obj1，obj1 仍然是可达的</span><br>    <span class="hljs-keyword">let</span> obj3 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 3&quot;</span> &#125;;  <span class="hljs-comment">// obj3 是可达的</span><br>    obj1 = <span class="hljs-literal">null</span>;  <span class="hljs-comment">// obj1 被设置为 null，原本引用 obj1 的对象仍然存在，因此原本的 obj1 仍然是可达的</span><br>    <br>    <span class="hljs-keyword">return</span> obj2;  <span class="hljs-comment">// 函数返回 obj2，obj2 和它所引用的对象都仍然是可达的</span><br>&#125;<br><br><span class="hljs-keyword">let</span> globalObj = <span class="hljs-title function_">exampleFunction</span>();  <span class="hljs-comment">// globalObj 引用了 obj2，因此 obj2 是可达的</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h5><ol>
+<li><strong>初始状态：</strong><ul>
+<li>当<code>exampleFunction()</code>被调用时，函数内部的<code>obj1</code>、<code>obj2</code>和<code>obj3</code>都是局部变量，它们都可以通过栈帧访问，因此它们是可达的。</li>
+</ul>
+</li>
+<li><strong>引用关系：</strong><ul>
+<li><code>obj2</code>引用了<code>obj1</code>，这意味着即使<code>obj1</code>不再被局部变量直接引用，它仍然通过<code>obj2</code>是可达的。</li>
+<li><code>obj3</code>虽然是局部变量，但它没有其他引用，仅仅在函数内部可达。</li>
+</ul>
+</li>
+<li><strong>设置<code>obj1</code>为null：</strong><ul>
+<li>当<code>obj1</code>被设置为<code>null</code>时，函数内部的局部变量不再直接引用最初的<code>obj1</code>对象。然而，因为<code>obj2</code>引用了<code>obj1</code>，所以原来的<code>obj1</code>对象仍然是可达的。</li>
+<li>这意味着<code>obj1</code>的内容仍然存在于内存中，未被垃圾回收。</li>
+</ul>
+</li>
+<li><strong>函数返回后：</strong><ul>
+<li><code>exampleFunction()</code>返回了<code>obj2</code>，并且<code>globalObj</code>引用了<code>obj2</code>。由于<code>obj2</code>是全局变量，垃圾回收器认为<code>obj2</code>是根对象，<code>obj2</code>及其引用的<code>obj1</code>对象都被保留在内存中。</li>
+<li><code>obj3</code>在函数结束时失去引用，成为不可达的对象，因此<code>obj3</code>及其内容可能会被垃圾回收器回收。</li>
+</ul>
+</li>
+</ol>
+<h5 id="结论"><a href="#结论" class="headerlink" title="结论"></a><strong>结论</strong></h5><ul>
+<li><strong>可达性</strong>：在这个示例中，通过函数返回值和变量之间的引用链，<code>obj1</code>和<code>obj2</code>都保持了可达性，而<code>obj3</code>失去了可达性，最终会被垃圾回收。</li>
+<li><strong>垃圾回收</strong>：垃圾回收器会回收那些不可达的对象，以释放内存。在这个例子中，<code>obj3</code>就是一个被垃圾回收器标记为不可达并可能最终回收的对象。</li>
+</ul>
+<h3 id="GC算法是什么？"><a href="#GC算法是什么？" class="headerlink" title="GC算法是什么？"></a>GC算法是什么？</h3><ul>
+<li><strong>GC（Garbage Collection）</strong>是内存管理中的一种机制，负责自动回收不再使用的内存。具体的回收工作由 <strong>垃圾回收器（Garbage Collector）</strong>来完成。</li>
+<li><strong>垃圾回收器的工作</strong>主要包括两个方面：一是查找哪些内存空间可以被释放（即识别哪些对象是“垃圾”），二是释放这些空间，使其可供程序再次使用。</li>
+<li><strong>GC算法</strong>则是垃圾回收器在执行这些工作时所遵循的规则和方法。不同的GC算法采用不同的策略来确定哪些对象应该被回收，以及如何有效地管理内存，以尽量减少对程序性能的影响。</li>
+</ul>
+<h3 id="垃圾回收中常见的GC算法"><a href="#垃圾回收中常见的GC算法" class="headerlink" title="垃圾回收中常见的GC算法"></a>垃圾回收中常见的GC算法</h3><h4 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h4><blockquote>
+<p>引用计数算法是一种常见的内存管理方法，通过跟踪每个值被引用的次数来决定何时回收内存。当一个变量被赋予一个引用类型的值时，引用次数增加；当该值被赋给其他变量时，引用次数进一步增加；如果变量被赋予新值或不再引用该值，引用次数则减少。当引用次数降为零时，说明该值已不再被使用，垃圾回收器会释放其占用的内存空间。这种方法有效地管理了内存，但也可能导致一些复杂的内存泄漏问题，如循环引用。</p>
+</blockquote>
+<h5 id="引用计数算法的实现原理"><a href="#引用计数算法的实现原理" class="headerlink" title="引用计数算法的实现原理"></a><strong>引用计数算法的实现原理</strong></h5><p>引用计数算法是一种简单而直观的内存管理机制，其核心思想是通过跟踪每个对象的引用次数来决定该对象是否应该被回收。以下是引用计数算法的基本实现原理：</p>
+<p><strong>1. 引用计数的初始化</strong></p>
+<ul>
+<li>当一个对象被创建时，引用计数器会初始化为 1，表示该对象被至少一个变量引用。</li>
+</ul>
+<p><strong>2. 引用计数的增加</strong></p>
+<ul>
+<li>每当有一个新的引用指向该对象时（例如，将对象赋值给另一个变量），该对象的引用计数就会增加 1。</li>
+</ul>
+<p><strong>3. 引用计数的减少</strong></p>
+<ul>
+<li>当一个引用不再指向该对象时（例如，将变量赋值为 <code>null</code> 或将对象引用赋值为另一个对象），该对象的引用计数就会减少 1。</li>
+</ul>
+<p><strong>4. 引用计数为 0 时的回收</strong></p>
+<ul>
+<li>当某个对象的引用计数降为 0 时，说明没有任何变量或对象再引用它，因此该对象无法再被访问，垃圾回收器就会释放该对象占用的内存。</li>
+</ul>
+<p><strong>5. 循环引用问题</strong></p>
+<ul>
+<li>如果两个或多个对象之间存在循环引用，即它们互相引用但不再被其他对象引用，则它们的引用计数永远不会降为 0。这会导致这些对象无法被回收，从而引发内存泄漏。这是引用计数算法的一个主要缺陷。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> a = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object A&quot;</span> &#125;;  <span class="hljs-comment">// a 的引用计数为 1</span><br><br><span class="hljs-keyword">let</span> b = a;  <span class="hljs-comment">// a 的引用计数增加为 2</span><br><br>a = <span class="hljs-literal">null</span>;  <span class="hljs-comment">// a 的引用计数减少为 1</span><br><br>b = <span class="hljs-literal">null</span>;  <span class="hljs-comment">// a 的引用计数降为 0，此时该对象可以被垃圾回收</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">createObject</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">let</span> obj1 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 1&quot;</span> &#125;; <br>    <span class="hljs-keyword">let</span> obj2 = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Object 2&quot;</span> &#125;;<br><br>    <span class="hljs-comment">// obj1 引用 obj2</span><br>    obj1.<span class="hljs-property">ref</span> = obj2;<br><br>    <span class="hljs-comment">// obj2 引用 obj1，形成循环引用</span><br>    obj2.<span class="hljs-property">ref</span> = obj1;<br><br>    <span class="hljs-keyword">return</span> &#123; obj1, obj2 &#125;;<br>&#125;<br><br><span class="hljs-keyword">let</span> objects = <span class="hljs-title function_">createObject</span>();<br><br><span class="hljs-comment">// 在这里，objects 引用了 obj1 和 obj2，因此 obj1 和 obj2 的引用计数都至少为 1</span><br><br><span class="hljs-comment">// 手动解除引用</span><br>objects = <span class="hljs-literal">null</span>; <br><br><span class="hljs-comment">// 虽然 objects 设为 null，obj1 和 obj2 仍然互相引用，导致它们的引用计数永远不会变为 0</span><br><span class="hljs-comment">// 因此，它们不会被垃圾回收器回收，造成内存泄漏</span><br><br></code></pre></td></tr></table></figure>
+
+<p><strong>优点</strong><br>引用计数算法相较于标记清除算法有几个显著的优势：</p>
+<ul>
+<li><strong>即时回收</strong>：引用计数算法在对象的引用次数降为 0 时立即回收内存。这意味着垃圾一旦生成，便能立即释放内存，从而避免了内存堆积。</li>
+<li><strong>无停顿回收</strong>：标记清除算法需要定期暂停应用程序执行来进行垃圾回收，这会导致短暂的性能停顿。而引用计数算法则不需要全局的停顿来执行垃圾回收，它的内存管理是分散在各个操作中的，因此不会引入明显的性能中断。</li>
+<li><strong>简单高效</strong>：引用计数算法在引用和解除引用时更新计数，不需要像标记清除算法那样遍历整个堆内存的所有对象，这在某些情况下可以更加高效。</li>
+</ul>
+<p><strong>缺点</strong><br>引用计数算法也有一些明显的缺陷：</p>
+<ul>
+<li><strong>额外的计数器开销</strong>：每个对象都需要维护一个引用计数器，这个计数器需要占用内存空间。尤其是在引用较多时，这些计数器可能会占用大量的内存。</li>
+<li><strong>无法处理循环引用</strong>：引用计数算法的最大问题是无法检测和处理循环引用。两个或多个对象互相引用时，即使它们不再被程序其他部分引用，它们的引用计数也不会降为 0，导致内存泄漏。</li>
+</ul>
+<blockquote>
+<p>总之，虽然引用计数算法有其即时回收和无停顿回收的优点，但它在处理复杂引用关系和内存管理开销方面的不足也不可忽视。循环引用问题尤其严重，常常需要与其他垃圾回收算法结合使用以确保内存能被正确回收。</p>
+</blockquote>
+<h4 id="标记清除算法（mark-sweep）"><a href="#标记清除算法（mark-sweep）" class="headerlink" title="标记清除算法（mark-sweep）"></a>标记清除算法（mark-sweep）</h4><blockquote>
+<p>标记-清除（Mark-Sweep）算法是现代垃圾回收器中广泛使用的一种算法。它通过两个主要阶段来管理内存：标记阶段和清除阶段。</p>
+</blockquote>
+<p><strong>1. 标记阶段（Mark Phase）</strong></p>
+<p>在标记阶段，垃圾回收器会遍历所有的根对象（通常是全局对象、栈中的局部变量和静态变量等），并递归地标记所有从根对象可达的对象为“活动”（reachable）。</p>
+<ul>
+<li><strong>根对象</strong>：根对象是程序运行中始终存在的对象，通常包括全局变量、栈帧中的变量以及一些静态变量。</li>
+<li><strong>可达对象</strong>：如果一个对象可以从根对象通过直接或间接的引用访问到，那么它被认为是可达的，且在标记阶段会被标记为“活动”。</li>
+</ul>
+<p><strong>2. 清除阶段（Sweep Phase）</strong></p>
+<p>在清除阶段，垃圾回收器会扫描堆内存中的所有对象，并回收那些没有在标记阶段被标记为“活动”的对象，即不可达的对象。</p>
+<ul>
+<li><strong>未标记的对象</strong>：这些对象在标记阶段没有被标记，意味着它们无法通过任何引用链从根对象访问到。垃圾回收器将它们视为“垃圾”，并回收它们占用的内存。</li>
+</ul>
+<h5 id="标记清除算法的实现原理"><a href="#标记清除算法的实现原理" class="headerlink" title="标记清除算法的实现原理"></a><strong>标记清除算法的实现原理</strong></h5><p><strong>初始化：</strong></p>
+<ul>
+<li>垃圾收集器在启动时会假设内存中的所有对象都是垃圾，并为它们加上一个标记，将其全部标记为0。这相当于初始化，准备后续的遍历和清理工作。</li>
+</ul>
+<p><strong>标记阶段：</strong></p>
+<ul>
+<li>垃圾收集器从各个根对象（如全局变量、栈中的局部变量等）开始遍历内存，识别出那些仍然可达的对象。对于每一个可达的对象，垃圾收集器会将其标记改为1，表示它是“活动的”，即不会被回收。</li>
+</ul>
+<p><strong>清除阶段：</strong></p>
+<ul>
+<li>在标记阶段结束后，垃圾收集器会扫描内存中所有的对象，并清理那些仍然标记为0的对象。这些对象被视为垃圾，因此它们所占用的内存将被销毁并回收。</li>
+</ul>
+<p><strong>内存释放：</strong></p>
+<ul>
+<li>清除阶段结束后，被回收的内存可以再次分配给新创建的对象。</li>
+</ul>
+<p><strong>优点</strong></p>
+<ol>
+<li><strong>解决循环引用问题：</strong><ul>
+<li>标记清除算法通过遍历根对象来标记可达对象，不依赖于引用计数，因此可以有效解决引用计数算法无法处理的循环引用问题。即使对象之间存在循环引用，只要它们是不可达的，最终都会被回收。</li>
+</ul>
+</li>
+<li><strong>无需维护引用计数：</strong><ul>
+<li>不像引用计数算法需要在每次引用增加或减少时更新计数，标记清除算法只在垃圾回收时进行一次标记和清除操作，减少了在正常程序执行中的开销。</li>
+</ul>
+</li>
+<li><strong>通用性强：</strong><ul>
+<li>标记清除算法适用于各种编程语言和内存管理需求，能够处理复杂的对象图，并且在很多现代垃圾回收器中都有使用。</li>
+</ul>
+</li>
+</ol>
+<p><strong>缺点</strong></p>
+<ol>
+<li><strong>程序停顿（Stop-the-World）：</strong><ul>
+<li>在标记和清除阶段，程序执行需要暂停，这种“Stop-the-World”操作可能导致应用的响应速度下降，特别是在堆内存非常大时，这种停顿可能会较为明显。</li>
+</ul>
+</li>
+<li><strong>内存碎片化：</strong><ul>
+<li>清除阶段会释放不可达对象的内存，这可能导致内存空间变得不连续，形成内存碎片化。碎片化的内存空间虽然被回收了，但由于其分散性，可能难以用于分配新的大对象。</li>
+</ul>
+</li>
+<li><strong>效率问题：</strong><ul>
+<li>标记清除算法在每次垃圾回收时需要遍历整个对象图并扫描整个堆内存，这对大规模应用程序的性能可能会造成一定的影响，尤其是在堆内存很大或者对象很多的情况下。</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/17/130mmeg-2.png" srcset="/img/loading.gif" lazyload alt="image-20240817235921347"></p>
+<p><strong>总结</strong></p>
+<blockquote>
+<p>标记清除算法通过初始标记、遍历根对象标记可达对象、清理不可达对象以及重置标记四个步骤，实现了有效的垃圾回收。它能够识别并清除不再使用的内存空间，并且能够处理循环引用问题。然而，标记清除算法在运行过程中会暂停程序的执行，并可能导致内存碎片化，这些都是需要在实际应用中考虑的问题。</p>
+</blockquote>
+<h4 id="标记整理算法（Mark-Compact）"><a href="#标记整理算法（Mark-Compact）" class="headerlink" title="标记整理算法（Mark-Compact）"></a>标记整理算法（Mark-Compact）</h4><blockquote>
+<p>标记整理（Mark-Compact）算法是标记清除算法的一个改进版本，旨在解决标记清除算法中存在的内存碎片化问题。标记整理算法通过将存活对象整理到内存的一端，从而将碎片化内存整理成连续的空闲空间，方便后续的内存分配。</p>
+</blockquote>
+<h5 id="标记整理算法的工作原理"><a href="#标记整理算法的工作原理" class="headerlink" title="标记整理算法的工作原理"></a>标记整理算法的工作原理</h5><blockquote>
+<p>标记整理算法的执行过程可以分为以下几个阶段：</p>
+</blockquote>
+<p>标记阶段（Mark Phase）：</p>
+<ul>
+<li>与标记清除算法类似，垃圾回收器从根对象开始，遍历对象图，标记所有可达的对象为“活动”对象。这些对象将不会被回收。</li>
+</ul>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/3tp5i-2.png" srcset="/img/loading.gif" lazyload alt="image-20240818000640408"></p>
+<p>整理阶段（Compact Phase）：</p>
+<ul>
+<li>在标记阶段之后，垃圾回收器会将所有存活的对象（即标记为“活动”的对象）向内存的一端移动，使内存中的活动对象排列得更加紧凑，减少内存碎片。这一步骤还会更新引用地址以确保它们指向正确的位置。</li>
+</ul>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/3woi2-2.png" srcset="/img/loading.gif" lazyload alt="image-20240818000654836"></p>
+<p>释放未使用的内存：</p>
+<ul>
+<li>在整理阶段完成后，所有非活动对象占用的内存被回收，形成一个连续的空闲区域，等待新的对象分配。这时内存中的布局显示出活动对象被集中到一端，未使用的内存空间则完全被释放。</li>
+</ul>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/48a1v-2.png" srcset="/img/loading.gif" lazyload alt="image-20240818000708341"></p>
+<h3 id="GC算法总结"><a href="#GC算法总结" class="headerlink" title="GC算法总结"></a>GC算法总结</h3><ul>
+<li><p>引用计数</p>
+<ol>
+<li>可以即时回收垃圾对象</li>
+<li>减少程序卡顿时间</li>
+<li>无法回收循环引用的对象</li>
+<li>资源消耗较大</li>
+</ol>
+</li>
+<li><p>标记清除</p>
+<p>   1.标记清除分两个阶段进行，首先标记活动对象，然后清除未标记的对象。 </p>
+<p>​    2.可以回收循环引用的对象空间，是引用计数算法的改进。 </p>
+<p>​    3.容易产生碎片化操作，无法最大化利用空间。 </p>
+<p>​    4.垃圾对象不会被立即回收，而是在最后清除，可能导致程序停止工作。</p>
+</li>
+<li><p>标记整理</p>
+<p>​    1.标记整理通过整理地址空间来解决标记清除的空间碎片化问题。</p>
+<p>​    2.同样无法立即回收垃圾对象，相对于引用计数和标记清除是缺点。</p>
+</li>
+</ul>
+<h3 id="V8引擎的内存限制"><a href="#V8引擎的内存限制" class="headerlink" title="V8引擎的内存限制"></a>V8引擎的内存限制</h3><h4 id="1-内存限制的背景"><a href="#1-内存限制的背景" class="headerlink" title="1. 内存限制的背景"></a><strong>1. 内存限制的背景</strong></h4><p>V8 引擎在不同环境下的内存限制有所不同，主要包括以下几个方面：</p>
+<ul>
+<li>桌面环境（如 Chrome 浏览器、桌面版 Node.js）：<ul>
+<li>在 64 位系统上，V8 引擎的堆内存限制通常在 <strong>1.5 GB</strong> 到 <strong>2 GB</strong> 之间。</li>
+<li>在 32 位系统上，这一限制较低，通常为 <strong>512 MB</strong> 到 <strong>1 GB</strong>。</li>
+</ul>
+</li>
+<li>移动设备：<ul>
+<li>在移动设备上，由于内存资源更为有限，V8 引擎的内存限制通常在 <strong>256 MB</strong> 到 <strong>512 MB</strong> 之间。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-内存限制的原因"><a href="#2-内存限制的原因" class="headerlink" title="2. 内存限制的原因"></a><strong>2. 内存限制的原因</strong></h4><ul>
+<li>设备限制：<ul>
+<li>不同设备的硬件能力，特别是内存容量的差异，决定了 V8 必须对内存使用进行严格控制，以确保在各种设备上都能高效运行。</li>
+</ul>
+</li>
+<li>性能优化：<ul>
+<li>V8 引擎通过设置内存限制，可以优化垃圾回收和内存管理，避免因内存过度占用导致的性能问题。例如，在内存紧张的情况下，垃圾回收频率可能会增加，以确保程序不会因内存不足而崩溃。</li>
+</ul>
+</li>
+<li>安全性考虑：<ul>
+<li>限制内存使用量还能够防止恶意脚本或程序占用过多的内存资源，从而影响系统的稳定性。这在浏览器环境和服务器端环境中都尤为重要，以防止内存泄漏或恶意攻击。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-Node-js-中的内存限制"><a href="#3-Node-js-中的内存限制" class="headerlink" title="3. Node.js 中的内存限制"></a><strong>3. Node.js 中的内存限制</strong></h4><blockquote>
+<p>在 V8 引擎中，所有的 JavaScript 对象都存储在堆内存中。V8 对堆内存的大小设置了默认限制。在旧版本的 Node.js 中，64 位系统上的堆内存限制通常为 <strong>1.5 GB</strong> 左右，而在 32 位系统上为 <strong>0.7 GB</strong> 左右。随着 Node.js 的版本更新和硬件的提升，最新版本（如 <code>v20.14.0</code>）的堆内存限制已提升至 <strong>4 GB</strong>。如果一个 Node.js 进程的堆内存使用量超过了这个限制，进程就会由于内存不足而退出。由于 Node.js 是基于 V8 引擎构建的，因此 V8 通过其内部机制来管理和分配这些堆内存。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// v20.14.0 内存统计示例</span><br><span class="hljs-title class_">HeapStatistics</span>: &#123;<br>  <span class="hljs-attr">total_heap_size</span>: <span class="hljs-number">5455872</span>,<br>  <span class="hljs-attr">total_heap_size_executable</span>: <span class="hljs-number">262144</span>,<br>  <span class="hljs-attr">total_physical_size</span>: <span class="hljs-number">5455872</span>,<br>  <span class="hljs-attr">total_available_size</span>: <span class="hljs-number">4341839008</span>,<br>  <span class="hljs-attr">used_heap_size</span>: <span class="hljs-number">4397648</span>,<br>  <span class="hljs-attr">heap_size_limit</span>: <span class="hljs-number">4345298944</span>,<br>  <span class="hljs-attr">malloced_memory</span>: <span class="hljs-number">147504</span>,<br>  <span class="hljs-attr">peak_malloced_memory</span>: <span class="hljs-number">1204272</span>,<br>  <span class="hljs-attr">does_zap_garbage</span>: <span class="hljs-number">0</span>,<br>  <span class="hljs-attr">number_of_native_contexts</span>: <span class="hljs-number">1</span>,<br>  <span class="hljs-attr">number_of_detached_contexts</span>: <span class="hljs-number">0</span>,<br>  <span class="hljs-attr">total_global_handles_size</span>: <span class="hljs-number">8192</span>,<br>  <span class="hljs-attr">used_global_handles_size</span>: <span class="hljs-number">2880</span>,<br>  <span class="hljs-attr">external_memory</span>: <span class="hljs-number">2275528</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="V8-的垃圾回收策略"><a href="#V8-的垃圾回收策略" class="headerlink" title="V8 的垃圾回收策略"></a>V8 的垃圾回收策略</h3><blockquote>
+<p>V8 引擎采用了<strong>分代式垃圾回收机制</strong>，根据对象的存活时间将内存分为不同的代，然后对每个代采用不同的垃圾回收算法。这种策略旨在提高垃圾回收的效率，同时最大限度地减少对程序性能的影响。</p>
+</blockquote>
+<h3 id="V8引擎内存空间划分"><a href="#V8引擎内存空间划分" class="headerlink" title="V8引擎内存空间划分"></a><strong>V8引擎内存空间划分</strong></h3><ol>
+<li><strong>Old Space（老生代空间）：</strong><ul>
+<li><strong>黄色区域</strong>：表示老生代空间（Old Space），用于存储生命周期较长或永久存在的对象。这部分内存空间通常占用较大，因为随着程序运行，很多对象会从新生代晋升到老生代。</li>
+</ul>
+</li>
+<li><strong>New Space（新生代空间）：</strong><ul>
+<li><strong>浅蓝色区域</strong>：表示新生代空间（New Space），这是存放生命周期较短的小对象的区域。新生代通常会被分为两个部分，一个是活动的新生代空间，另一个是非活动的新生代空间（Inactive New Space），用于 Scavenge 算法的复制过程。</li>
+</ul>
+</li>
+<li><strong>Large Object Space（大对象空间）：</strong><ul>
+<li><strong>红色区域</strong>：表示大对象空间（Large Object Space），用于存储非常大的对象，这些对象由于太大而无法在新生代空间中管理，直接存放在这个专用空间中。</li>
+</ul>
+</li>
+<li><strong>Code Space（代码空间）：</strong><ul>
+<li><strong>蓝色区域</strong>：表示代码空间（Code Space），存储 JIT 编译后的可执行代码。</li>
+</ul>
+</li>
+<li><strong>Map Space（映射空间）：</strong><ul>
+<li><strong>深蓝色区域</strong>：表示映射空间（Map Space），用于存储对象的映射结构，即对象的形状信息（如对象的属性和方法布局）。</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/1o6fg0-2.jpg" srcset="/img/loading.gif" lazyload alt="1723914063435"></p>
+<h3 id="V8新生代与老生代分布图"><a href="#V8新生代与老生代分布图" class="headerlink" title="V8新生代与老生代分布图"></a>V8新生代与老生代分布图</h3><blockquote>
+<p>在 V8 引擎的内存结构中，新生代（Young Generation）主要用于存放生命周期较短的对象。新生代内存由两个称为 Semispace（半空间）的区域组成，内存最大值在 64 位系统和 32 位系统上分别为 32 MB 和 16 MB。为了高效地管理和回收这些短生命周期的对象，新生代的垃圾回收主要采用 <strong>Scavenge</strong> 算法。</p>
+</blockquote>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/1ucy7k-2.png" srcset="/img/loading.gif" lazyload alt="image-20240818011143840"></p>
+<h3 id="新生代"><a href="#新生代" class="headerlink" title="新生代"></a>新生代</h3><h4 id="1-对象分配"><a href="#1-对象分配" class="headerlink" title="1. 对象分配"></a>1. <strong>对象分配</strong></h4><ul>
+<li>新生代内存（Young Generation）被分成两个相同大小的区域：<code>From Space</code> 和 <code>To Space</code>。</li>
+<li>新分配的对象会先被放置在<code>From Space</code>中。</li>
+</ul>
+<h4 id="2-垃圾回收触发"><a href="#2-垃圾回收触发" class="headerlink" title="2. 垃圾回收触发"></a>2. <strong>垃圾回收触发</strong></h4><ul>
+<li>当<code>From Space</code>空间快满时，V8的垃圾回收机制会触发一轮<strong>Minor GC</strong>（小型垃圾回收），也称为<strong>Scavenge</strong>。</li>
+</ul>
+<h4 id="3-对象复制"><a href="#3-对象复制" class="headerlink" title="3. 对象复制"></a>3. <strong>对象复制</strong></h4><ul>
+<li><p>在进行垃圾回收时，V8会扫描<code>From Space</code>中的存活对象，并将它们复制到<code>To Space</code>。</p>
+</li>
+<li><p>在复制过程中，会更新所有指向这些对象的引用，以确保它们指向新位置。</p>
+</li>
+<li><p>垃圾（即不再被引用的对象）不会被复制，因此自然会被回收。</p>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/23vd66-2.jpg" srcset="/img/loading.gif" lazyload alt="1723915659111"></p>
+</li>
+</ul>
+<h4 id="4-空间交换"><a href="#4-空间交换" class="headerlink" title="4. 空间交换"></a>4. <strong>空间交换</strong></h4><ul>
+<li><p>当复制完成后，<code>From Space</code>和<code>To Space</code>的角色会交换：</p>
+<ul>
+<li><p><code>From Space</code>（原来的<code>To Space</code>）成为新的活跃空间，用来存放接下来分配的新对象。</p>
+</li>
+<li><p><code>To Space</code>（原来的<code>From Space</code>）则被清空，等待下一次垃圾回收的使用。</p>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/249beu-2.jpg" srcset="/img/loading.gif" lazyload alt="1723915682776"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-对象晋升"><a href="#5-对象晋升" class="headerlink" title="5. 对象晋升"></a>5. <strong>对象晋升</strong></h4><ul>
+<li>如果一个对象在多次垃圾回收中都存活下来，V8会将该对象从新生代（Young Generation）移动到老生代（Old Generation），这称为<strong>晋升</strong>（Promotion）。老生代用于存储生命周期较长的对象，垃圾回收频率较低。</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h4><ul>
+<li><code>From Space</code> 和 <code>To Space</code> 是新生代（Young Generation）中的两个区域，它们在每次垃圾回收后交换角色。</li>
+<li>新生代内存的垃圾回收采用复制收集算法，存活的对象被复制到新的空间，不再使用的对象则被丢弃。</li>
+<li>多次垃圾回收后仍存活的对象将被晋升到老生代，以减少新生代内存的压力。</li>
+</ul>
+<h3 id="老生代"><a href="#老生代" class="headerlink" title="老生代"></a>老生代</h3><blockquote>
+<p>不同于新生代，老生代中存储的内容是相对使用频繁并且短时间无需清理回收的内容。这部分我们可以使用<strong>标记整理</strong>进行处理。</p>
+<p>从一组根元素开始，递归遍历这组根元素，遍历过程中能到达的元素称为活动对象，没有到达的元素就可以判断为非活动对象</p>
+<p>清除阶段老生代垃圾回收器会直接将非活动对象进行清除。</p>
+</blockquote>
+<h4 id="全停顿（Stop-The-World）与-V8-引擎的优化策略"><a href="#全停顿（Stop-The-World）与-V8-引擎的优化策略" class="headerlink" title="全停顿（Stop-The-World）与 V8 引擎的优化策略"></a>全停顿（Stop-The-World）与 V8 引擎的优化策略</h4><blockquote>
+<p>由于 JavaScript 运行在主线程之上，一旦执行垃圾回收（Garbage Collection，GC），必须将正在执行的 JavaScript 脚本暂停，待垃圾回收完毕后再恢复脚本执行。这种行为称为 <strong>全停顿（Stop-The-World，STW）</strong>其实如果用前端开发的术语来解释，就是<strong>阻塞</strong>。</p>
+</blockquote>
+<h5 id="全停顿的影响"><a href="#全停顿的影响" class="headerlink" title="全停顿的影响"></a><strong>全停顿的影响</strong></h5><blockquote>
+<p>STW 会导致系统出现周期性的卡顿，这对实时性要求高或与时间相关的任务影响尤为显著。例如，当 JavaScript 脚本需要执行动画效果时，如果恰好遇到 GC 过程，动画可能会出现卡顿现象，导致用户体验极差。</p>
+</blockquote>
+<h5 id="V8-引擎的优化策略：Orinoco"><a href="#V8-引擎的优化策略：Orinoco" class="headerlink" title="V8 引擎的优化策略：Orinoco"></a><strong>V8 引擎的优化策略：Orinoco</strong></h5><blockquote>
+<p>为了降低 STW 导致的卡顿和性能不佳，V8 引擎引入了名为 <strong>Orinoco</strong> 的垃圾回收器。Orinoco 是 V8 团队经过多年不断优化和精细化调校后的成果，具备了多种优化手段，从而极大地提升了 GC 过程的性能和用户体验。</p>
+</blockquote>
+<h5 id="关键优化手段"><a href="#关键优化手段" class="headerlink" title="关键优化手段"></a><strong>关键优化手段</strong></h5><ol>
+<li><strong>增量标记（Incremental Marking）</strong>：<ul>
+<li>Orinoco 在垃圾回收过程中引入了增量标记技术，将标记阶段分解为多个小步骤，在 JavaScript 脚本执行的间隙进行。这种方式有效减少了 STW 导致的长时间卡顿现象。</li>
+</ul>
+</li>
+<li><strong>并发标记（Concurrent Marking）</strong>：<ul>
+<li>并发标记允许标记阶段和 JavaScript 脚本执行并行进行，这进一步降低了 STW 的影响，减少了用户感知到的卡顿时间。</li>
+</ul>
+</li>
+<li><strong>并行清理（Parallel Sweeping）</strong>：<ul>
+<li>在清理阶段，Orinoco 垃圾回收器可以利用多核处理器进行并行清理操作，从而加快垃圾回收过程，缩短 STW 时间。</li>
+</ul>
+</li>
+<li><strong>延迟回收（Lazy Sweeping）</strong>：<ul>
+<li>延迟回收技术允许垃圾回收器将部分非关键的清理工作延后进行，在不影响应用程序性能的情况下进一步减少卡顿。</li>
+</ul>
+</li>
+</ol>
+<h4 id="并行回收"><a href="#并行回收" class="headerlink" title="并行回收"></a>并行回收</h4><h5 id="什么是并行回收？"><a href="#什么是并行回收？" class="headerlink" title="什么是并行回收？"></a><strong>什么是并行回收？</strong></h5><blockquote>
+<p>在传统的垃圾回收过程中，JavaScript 代码执行的主线程需要暂停一段时间，等垃圾回收完成后才能继续执行。这段时间我们称为 <strong>全停顿</strong>（Stop-the-World，STW）。如果这个暂停时间太长，比如几秒钟，用户可能会感觉到应用程序卡顿，尤其是在需要持续响应的场景下，如动画播放或游戏中。</p>
+<p>为了改善这种情况，V8 引擎引入了 <strong>并行回收</strong> 技术。简单来说，就是把垃圾回收的工作分成几部分，让多个处理器核心同时进行这些工作，而不是让主线程一个个地完成所有任务。</p>
+</blockquote>
+<h5 id="并行回收如何工作？"><a href="#并行回收如何工作？" class="headerlink" title="并行回收如何工作？"></a>并行回收如何工作？</h5><blockquote>
+<p><strong>任务分解</strong>：</p>
+<ul>
+<li>当垃圾回收器开始工作时，它不会一次性暂停所有的 JavaScript 代码执行并处理所有垃圾回收工作，而是把这个任务分解成几个较小的步骤。</li>
+</ul>
+<p><strong>多个处理器核心同时工作</strong>：</p>
+<ul>
+<li>这些较小的步骤会被分配给多个处理器核心，让它们并行处理。这样，垃圾回收的工作速度就能大大加快。</li>
+</ul>
+<p><strong>主线程的暂停时间减少</strong>：</p>
+<ul>
+<li>由于这些垃圾回收工作同时进行，主线程需要暂停的时间就被压缩到最小。比如，原本可能需要暂停 3 秒的垃圾回收工作，现在可以分成 3 个部分，每部分只暂停 1 秒。</li>
+</ul>
+</blockquote>
+<h5 id="举个简单的例子"><a href="#举个简单的例子" class="headerlink" title="举个简单的例子"></a><strong>举个简单的例子</strong></h5><blockquote>
+<p>想象一下，你和你的朋友要清理一个大房间。传统的垃圾回收方式就像一个人独自清理房间，这样会花很长时间。而并行回收就像是你和几个朋友一起分工合作，同时清理房间。这样清理房间的时间就会大大缩短，你们也可以更快地回到正常活动中。</p>
+</blockquote>
+<h6 id="并行回收的好处"><a href="#并行回收的好处" class="headerlink" title="并行回收的好处"></a><strong>并行回收的好处</strong></h6><ul>
+<li><strong>减少卡顿</strong>：通过分工合作、并行处理，垃圾回收的暂停时间大大减少，应用程序的卡顿现象明显降低。</li>
+<li><strong>提升用户体验</strong>：尤其是在动画播放、游戏或其他需要持续响应的场景中，并行回收可以让用户感觉到应用程序运行更加流畅。</li>
+<li><strong>更高效的资源利用</strong>：充分利用多核处理器的优势，加快垃圾回收的速度，让整个系统的资源使用更为高效。</li>
+</ul>
+<h4 id="增量回收"><a href="#增量回收" class="headerlink" title="增量回收"></a>增量回收</h4><blockquote>
+<p>在 V8 引擎中，虽然并行回收策略已经减少了部分 STW（Stop-The-World，全停顿）现象，但在处理老生代中的大对象时，仍然可能会出现较长的停顿时间。为了解决这一问题，V8 引擎引入了 <strong>增量回收（Incremental Collection）</strong> 策略。增量回收的核心思路是将一次 GC 标记过程分解为许多小步，每执行完一个小步后，应用逻辑得以继续执行一段时间。通过这种交替进行的方式，增量回收能够在完成一轮 GC 标记的同时，显著减少 STW 对程序性能的影响。</p>
+</blockquote>
+<p><img src="https://tuchuang.junsen.online/i/2024/08/18/2hfrv3-2.jpg" srcset="/img/loading.gif" lazyload alt="1723917018713"></p>
+<h4 id="三色标记法"><a href="#三色标记法" class="headerlink" title="三色标记法"></a>三色标记法</h4><blockquote>
+<p>三色标记法是一种用于垃圾回收的算法，能够在垃圾回收器随时启动或暂停时，保持标记过程的完整性，并确保不丢失已经标记的结果。该算法使用三种颜色来表示对象的不同状态：白色、灰色和黑色。</p>
+</blockquote>
+<h5 id="规则和流程："><a href="#规则和流程：" class="headerlink" title="规则和流程："></a><strong>规则和流程：</strong></h5><ol>
+<li><strong>初始化</strong>：<ul>
+<li><strong>白色</strong>：初始状态下，所有对象都被标记为白色。白色对象表示尚未访问或处理的对象。</li>
+</ul>
+</li>
+<li><strong>标记开始</strong>：<ul>
+<li>从 <strong>GC Root</strong>（垃圾回收的根对象集合）开始遍历所有可到达的对象，将它们标记为 <strong>灰色</strong>，并放入待处理的队列中。灰色对象表示已经被访问，但其引用的对象尚未全部处理完毕。</li>
+</ul>
+</li>
+<li><strong>处理灰色对象</strong>：<ul>
+<li>从待处理队列中取出一个灰色对象，将它所引用的所有对象标记为灰色，并放入待处理队列。同时，将当前灰色对象标记为 <strong>黑色</strong>。黑色对象表示已经完全处理完毕，它和它引用的对象都不再需要进一步检查。</li>
+</ul>
+</li>
+<li><strong>重复标记</strong>：<ul>
+<li>重复以上步骤，直到灰色对象队列为空。此时，所有存活的对象要么是黑色（已完全处理），要么是灰色（处理中）。当标记完成后，所有未被标记的白色对象即为垃圾对象，可以进行回收。</li>
+</ul>
+</li>
+</ol>
+<h5 id="算法的优势："><a href="#算法的优势：" class="headerlink" title="算法的优势："></a><strong>算法的优势：</strong></h5><ul>
+<li><strong>可暂停和恢复</strong>：垃圾回收器可以根据内存中是否还有灰色对象来判断标记过程是否完成。如果灰色对象队列为空，表示标记过程已完成，可以进行清理工作。如果仍有灰色对象，当垃圾回收器再次启动时，可以从这些灰色对象继续处理，确保标记过程的完整性。</li>
+</ul>
+<h5 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a><strong>总结</strong></h5><blockquote>
+<p>三色标记法通过颜色标记系统（白、灰、黑）管理对象的状态，确保在垃圾回收过程中，标记可以随时暂停和恢复，且不丢失已经处理的结果。该算法在确保标记准确性的同时，也提高了垃圾回收的灵活性和效率，特别适用于需要频繁暂停和恢复的场景。</p>
+</blockquote>
+<h4 id="写屏障"><a href="#写屏障" class="headerlink" title="写屏障"></a><strong>写屏障</strong></h4><blockquote>
+<p>写屏障（Write Barrier）是一种用于垃圾回收器的机制，旨在解决在 JavaScript 代码执行过程中，因对象引用变化而导致标记不准确的问题。特别是在增量标记过程中，写屏障能够确保标记结果的准确性，避免在垃圾回收过程中出现遗漏或错误。</p>
+</blockquote>
+<h5 id="对象引用变化的两种情况："><a href="#对象引用变化的两种情况：" class="headerlink" title="对象引用变化的两种情况："></a><strong>对象引用变化的两种情况：</strong></h5><ol>
+<li><strong>已标记的黑色或灰色对象不再被其他对象引用：</strong><ul>
+<li>这种情况通常不会引发严重问题，因为在下次垃圾回收（GC）过程中，这些对象会重新被标记为白色，并最终被清除掉。</li>
+</ul>
+</li>
+<li><strong>新引入的对象可能是白色对象：</strong><ul>
+<li>新对象最初被标记为白色，而白色对象意味着尚未被访问和标记。如果一个黑色对象（已经完全处理的对象）突然引用了这个白色对象，由于白色对象还没有被标记为存活，它在接下来的垃圾回收中可能会被错误地清除，导致程序异常。</li>
+</ul>
+</li>
+</ol>
+<h5 id="写屏障的工作原理："><a href="#写屏障的工作原理：" class="headerlink" title="写屏障的工作原理："></a><strong>写屏障的工作原理：</strong></h5><ul>
+<li><strong>强制颜色转换</strong>：<ul>
+<li>当系统检测到一个黑色对象开始引用一个白色对象时，写屏障机制会立即将该白色对象标记为灰色。这样一来，白色对象就不会在本轮垃圾回收中被误清除，而是会在下一个标记阶段中被正确处理。</li>
+</ul>
+</li>
+<li><strong>保障标记的准确性</strong>：<ul>
+<li>通过使用写屏障策略，垃圾回收器能够确保在对象引用发生变化时，所有引用关系都能被正确跟踪和更新。这种方式确保了增量标记过程中，引用变动不会影响垃圾回收的准确性。</li>
+</ul>
+</li>
+</ul>
+<h5 id="强三色原则"><a href="#强三色原则" class="headerlink" title="强三色原则"></a><strong>强三色原则</strong></h5><p>这种写屏障机制通常被称为 <strong>强三色原则</strong>。它确保无论何时，只要一个黑色对象引用了一个白色对象，这个白色对象都会被立即标记为灰色，避免它在当前垃圾回收过程中被误清除。</p>
+<h5 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a><strong>总结</strong></h5><blockquote>
+<p>写屏障在增量标记的垃圾回收过程中起到了关键作用。通过实时更新引用对象的颜色状态，写屏障确保了垃圾回收的准确性和安全性，避免了因对象引用变动而导致的潜在错误。特别是在高性能和复杂应用场景中，写屏障是保障垃圾回收稳定性的重要机制。</p>
+</blockquote>
+<h4 id="惰性清理"><a href="#惰性清理" class="headerlink" title="惰性清理"></a><strong>惰性清理</strong></h4><blockquote>
+<p>在 V8 引擎中，增量标记用于区分活动对象和非活动对象，但真正的内存释放工作则依赖于 <strong>惰性清理（Lazy Sweeping）</strong> 策略。</p>
+</blockquote>
+<h5 id="惰性清理的工作原理："><a href="#惰性清理的工作原理：" class="headerlink" title="惰性清理的工作原理："></a><strong>惰性清理的工作原理：</strong></h5><ul>
+<li><strong>延迟清理</strong>：<ul>
+<li>当增量标记完成后，V8 引擎会判断当前的可用内存是否足以支持 JavaScript 代码的继续执行。如果可用内存充足，那么没有必要立即进行全面的内存清理。相反，V8 会选择将清理过程稍微延迟，让 JavaScript 代码优先执行。</li>
+</ul>
+</li>
+<li><strong>按需清理</strong>：<ul>
+<li>惰性清理允许内存的清理过程按需进行，而不是一次性清理所有非活动对象的内存。V8 会逐步清理这些非活动对象的内存，直到所有需要回收的内存都被释放完毕。</li>
+</ul>
+</li>
+</ul>
+<h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a><strong>优势</strong></h5><blockquote>
+<p>这种策略能够有效平衡内存管理与程序执行的效率，在确保内存资源得到充分利用的同时，减少对 JavaScript 代码执行的中断和影响。通过惰性清理，V8 引擎能够在不影响应用程序性能的前提下，逐步释放内存，优化用户体验。</p>
+</blockquote>
+<h4 id="并发回收"><a href="#并发回收" class="headerlink" title="并发回收"></a><strong>并发回收</strong></h4><blockquote>
+<p><strong>并发回收（Concurrent Collection）</strong> 是一种垃圾回收技术，旨在减少垃圾回收对应用程序主线程执行的干扰，进一步提升应用程序的性能和响应速度。与传统的 STW（Stop-The-World，全停顿）回收方式不同，并发回收允许垃圾回收器在主线程继续执行应用逻辑的同时，利用独立的线程或处理器核心进行垃圾回收任务。</p>
+</blockquote>
+<h5 id="并发回收的工作原理"><a href="#并发回收的工作原理" class="headerlink" title="并发回收的工作原理"></a><strong>并发回收的工作原理</strong></h5><ol>
+<li><strong>分离回收线程</strong>：<ul>
+<li>在并发回收策略中，垃圾回收任务被分配到单独的线程或处理器核心上执行。这意味着主线程可以继续处理用户交互、动画渲染或其他任务，而垃圾回收则在后台悄无声息地进行。</li>
+</ul>
+</li>
+<li><strong>标记并发</strong>：<ul>
+<li>在并发标记阶段，垃圾回收器通过一个独立的线程对内存中的对象进行标记。这种并行处理确保了标记过程不会对主线程产生显著影响，从而减少全停顿时间。</li>
+</ul>
+</li>
+<li><strong>并发清理</strong>：<ul>
+<li>在标记完成后，并发回收器会继续在独立的线程上进行内存的清理和整理工作。因为这些操作都是在后台进行的，主线程几乎不会感知到这些操作，应用程序的执行不会受到明显影响。</li>
+</ul>
+</li>
+<li><strong>处理线程间的同步</strong>：<ul>
+<li>为了确保数据的一致性，并发回收器需要与主线程进行同步，特别是在处理一些对象引用更新或其他关键操作时。V8 引擎采用了高效的同步机制，确保并发回收过程中数据的一致性和正确性。</li>
+</ul>
+</li>
+</ol>
+<h5 id="并发回收的优势"><a href="#并发回收的优势" class="headerlink" title="并发回收的优势"></a><strong>并发回收的优势</strong></h5><ul>
+<li><strong>减少全停顿时间</strong>：<ul>
+<li>并发回收的主要优势在于大幅减少了垃圾回收导致的全停顿时间。应用程序可以在几乎不被打断的情况下继续执行，从而提高了用户体验。</li>
+</ul>
+</li>
+<li><strong>更高的吞吐量</strong>：<ul>
+<li>通过充分利用多核处理器的能力，并发回收能够提高系统的整体吞吐量，让垃圾回收和应用逻辑处理同时进行。</li>
+</ul>
+</li>
+<li><strong>平滑的用户体验</strong>：<ul>
+<li>由于并发回收降低了垃圾回收对应用程序执行的影响，用户感知到的卡顿现象大大减少，特别是在需要持续高响应的应用场景中，例如实时互动和游戏应用。</li>
+</ul>
+</li>
+</ul>
+<h5 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a><strong>应用场景</strong></h5><blockquote>
+<p>并发回收特别适合于那些对响应时间要求较高的应用场景，例如游戏、实时数据处理、以及高交互性的用户界面。它能够有效避免长时间的卡顿现象，确保应用程序在高负载下依然能够保持流畅的用户体验。</p>
+</blockquote>
+<h5 id="总结-3"><a href="#总结-3" class="headerlink" title="总结"></a><strong>总结</strong></h5><blockquote>
+<p>并发回收通过在独立线程中执行垃圾回收任务，有效减少了垃圾回收对主线程的影响。这种策略不仅提升了应用程序的性能，还显著改善了用户体验，特别是在对实时性要求较高的应用场景中，表现尤为出色。</p>
+</blockquote>
+<h3 id="分代式垃圾回收机制总结"><a href="#分代式垃圾回收机制总结" class="headerlink" title="分代式垃圾回收机制总结"></a><strong>分代式垃圾回收机制总结</strong></h3><blockquote>
+<p>分代式垃圾回收机制通过将内存中的对象划分为 <strong>新生代</strong> 和 <strong>老生代</strong>，大幅提升了垃圾回收的效率</p>
+<ul>
+<li><p><strong>新生代</strong>：存放新创建的、小型的、生命周期较短的对象。由于这些对象的存活时间较短，因此新生代采用了高频率、快速清理的回收策略，使用一小块内存进行频繁的垃圾回收，以快速回收内存。</p>
+</li>
+<li><p><strong>老生代</strong>：存放大对象、生命周期较长或长期存活的对象。老生代中的对象由于已经存活较长时间，不太可能很快被回收，因此回收的频率较低，采用了更复杂和谨慎的回收机制。</p>
+</li>
+</ul>
+<p>V8 引擎通过分代式垃圾回收机制，结合针对新生代和老生代的不同回收算法，优化了内存管理的效率。这种划分使 V8 能够根据对象的生命周期特性，采用最适合的回收策略，从而提高了垃圾回收的效率，减少了内存碎片，并最大限度地降低了垃圾回收对程序性能的影响。</p>
+</blockquote>
+<h2 id="特殊的小知识点"><a href="#特殊的小知识点" class="headerlink" title="特殊的小知识点"></a>特殊的小知识点</h2><ol>
+<li><strong>浏览器垃圾回收与 JavaScript 脚本执行</strong>：<ul>
+<li>当浏览器进行垃圾回收时，JavaScript 脚本的执行会被暂时中断，直到垃圾回收完成后才会继续执行。因此，在高频繁的垃圾回收场景中，优化策略的使用显得尤为重要，以避免不必要的脚本执行延迟。</li>
+</ul>
+</li>
+<li><strong>WeakMap 和 WeakSet</strong>：<ul>
+<li><code>WeakMap</code> 和 <code>WeakSet</code> 是特殊的数据结构，它们的键（对于 <code>WeakMap</code>）或值（对于 <code>WeakSet</code>）不会被垃圾回收机制考虑。这意味着如果没有其他引用指向这些键或值，它们可以被垃圾回收，从而避免内存泄漏。</li>
+</ul>
+</li>
+<li><strong>闭包与内存泄漏</strong>：<ul>
+<li>闭包中的变量是我们需要用到的，因此不会导致内存泄漏。尽管闭包可能会在函数执行完毕后保留对外部变量的引用，但只要这些引用仍然有用，垃圾回收机制就不会回收它们。</li>
+</ul>
+</li>
+</ol>
+<h2 id="容易导致内存泄露的场景"><a href="#容易导致内存泄露的场景" class="headerlink" title="容易导致内存泄露的场景"></a>容易导致内存泄露的场景</h2><ol>
+<li><strong>内存泄露的概念</strong>：<ul>
+<li>内存泄露是指那些「用不到」（无法访问）的变量依然占据着内存空间，无法被垃圾回收机制回收，导致内存无法再利用。</li>
+</ul>
+</li>
+<li><strong>常见场景</strong>：<ul>
+<li><strong>意外的全局变量</strong>：<ul>
+<li>在非严格模式下，如果在函数中未定义的变量会自动创建为全局变量，这会意外地污染全局作用域并导致内存泄露。</li>
+<li><strong>解决方案</strong>：使用严格模式 (<code>&#39;use strict&#39;</code>) 来避免未定义变量变为全局变量。</li>
+</ul>
+</li>
+<li><strong>被遗忘的计时器或回调函数</strong>：<ul>
+<li>如果存在被遗忘的计时器或回调函数，它们的引用不会被垃圾回收机制自动清除，从而导致内存泄露。</li>
+<li><strong>解决方案</strong>：现代浏览器可以检测到此类问题，并在必要时清除这些引用，开发者也应确保及时清理不再需要的计时器和回调。</li>
+</ul>
+</li>
+<li><strong>脱离 DOM 的引用</strong>：<ul>
+<li>将 DOM 元素保存到对象或数组中，而不清除它们的引用，可能导致内存泄露，因为这些引用会持续存在，即使这些 DOM 元素已经从页面上移除。</li>
+<li><strong>解决方案</strong>：确保在不再需要这些 DOM 元素时，及时清除对它们的引用。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="理解与解决内存泄漏的优化策略"><a href="#理解与解决内存泄漏的优化策略" class="headerlink" title="理解与解决内存泄漏的优化策略"></a>理解与解决内存泄漏的优化策略</h2><h3 id="1-怎么理解内存泄漏？"><a href="#1-怎么理解内存泄漏？" class="headerlink" title="1. 怎么理解内存泄漏？"></a>1. <strong>怎么理解内存泄漏？</strong></h3><blockquote>
+<p>内存泄漏是指程序在运行过程中，分配的内存无法被系统回收利用的情况。具体来说，当程序不再需要某些数据或对象时，这些对象仍然占据着内存空间，导致内存得不到释放。随着时间的推移，内存泄漏会导致系统内存逐渐减少，最终可能导致程序崩溃或性能严重下降。</p>
+</blockquote>
+<h3 id="2-怎么解决内存泄漏？代码层面如何优化？"><a href="#2-怎么解决内存泄漏？代码层面如何优化？" class="headerlink" title="2. 怎么解决内存泄漏？代码层面如何优化？"></a>2. <strong>怎么解决内存泄漏？代码层面如何优化？</strong></h3><h4 id="减少全局变量的使用"><a href="#减少全局变量的使用" class="headerlink" title="减少全局变量的使用"></a><strong>减少全局变量的使用</strong></h4><blockquote>
+<p>全局变量不会被垃圾回收器轻易回收，建议尽量减少全局变量的使用，将变量声明在局部作用域内。</p>
+</blockquote>
+<ul>
+<li><p>示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs js">不推荐的写法：使用全局变量<br><span class="hljs-keyword">var</span> i, str = <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">packageDomGlobal</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">for</span>(i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1000</span>; i++) &#123;<br>        str += i<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 推荐的写法：使用局部变量</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">packageDomLocal</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">let</span> str = <span class="hljs-string">&#x27;&#x27;</span><br>    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1000</span>; i++) &#123;<br>        str += i<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="减少不必要的变量声明"><a href="#减少不必要的变量声明" class="headerlink" title="减少不必要的变量声明"></a><strong>减少不必要的变量声明</strong></h4><blockquote>
+<p>在循环或重复执行的代码中，尽量减少不必要的变量声明，特别是那些值不变的变量，应该提前抽离出来以减少内存消耗。</p>
+</blockquote>
+<ul>
+<li><p>示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 不推荐的写法：每次循环都计算数组长度</span><br><span class="hljs-keyword">var</span> <span class="hljs-title function_">printArray</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-keyword">let</span> arr = [<span class="hljs-string">&#x27;apple&#x27;</span>, <span class="hljs-number">10</span>, <span class="hljs-string">&#x27;banana&#x27;</span>];<br>  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr.<span class="hljs-property">length</span>; i++)&#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(arr[i]);<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// 推荐的写法：提前计算数组长度</span><br><span class="hljs-keyword">var</span> <span class="hljs-title function_">printArray</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-keyword">let</span> arr = [<span class="hljs-string">&#x27;apple&#x27;</span>, <span class="hljs-number">10</span>, <span class="hljs-string">&#x27;banana&#x27;</span>];<br>  <span class="hljs-keyword">const</span> length = arr.<span class="hljs-property">length</span>;<br>  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; length; i++)&#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(arr[i]);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="清除不再使用的引用"><a href="#清除不再使用的引用" class="headerlink" title="清除不再使用的引用"></a><strong>清除不再使用的引用</strong></h4><blockquote>
+<p>当不再需要某些对象或数据时，确保清除对它们的引用，特别是在 DOM 操作和事件绑定中，要及时解除绑定并移除不再使用的 DOM 元素。</p>
+</blockquote>
+<ul>
+<li><p>示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">removeElement</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">const</span> element = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;myElement&#x27;</span>);<br>    element.<span class="hljs-property">parentNode</span>.<span class="hljs-title function_">removeChild</span>(element);<br>    element = <span class="hljs-literal">null</span>; <span class="hljs-comment">// 清除引用</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="使用性能分析工具"><a href="#使用性能分析工具" class="headerlink" title="使用性能分析工具"></a><strong>使用性能分析工具</strong></h4><p>利用浏览器的 Performance 和 Memory 工具，可以帮助分析和检测内存泄漏问题。通过这些工具，可以查看页面内存使用情况，发现潜在的内存泄漏点，并优化代码以提高性能。</p>
+<ul>
+<li>示例：<ul>
+<li>使用 Chrome 开发者工具的 Memory 面板进行内存快照分析。</li>
+<li>使用 Performance 面板查看 JavaScript 执行时间和内存消耗。</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结-4"><a href="#总结-4" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>内存泄漏是一个需要关注的问题，通过优化代码、减少不必要的全局变量和重复计算，及时清理不再使用的引用，以及使用性能分析工具，可以有效预防和解决内存泄漏，提升应用的稳定性和性能。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">前端笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E7%AC%94%E8%AE%B0/" class="print-no-link">#前端笔记</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JavaScript内功修炼：内存管理与分代垃圾回收机制详解</div>
+      <div>https://junsen.online/2024/08/17/JavaScript内功修炼：垃圾回收/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Junsen</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/11/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E4%BA%8B%E4%BB%B6%E6%A8%A1%E5%9E%8B/" title="JavaScript内功修炼：浏览器事件模型">
+                        <span class="hidden-mobile">JavaScript内功修炼：浏览器事件模型</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://junsen.online/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/';
+          this.page.identifier = '/2024/08/17/JavaScript%E5%86%85%E5%8A%9F%E4%BF%AE%E7%82%BC%EF%BC%9A%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <div class="footer-content"> <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>  </div> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备2023129632号-1
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

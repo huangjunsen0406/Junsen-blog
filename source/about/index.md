@@ -56,7 +56,7 @@ comment: 'valine'
 
 - 2023参加广东省Web应用软件开发竞赛 获三等奖
 
-  
+
 
 ## 工作经历
 {% note success %}
@@ -76,7 +76,7 @@ comment: 'valine'
 ![8b16cfdc4df77ff4f6f0a9ef280f021](https://tuchuang.junsen.online/i/2024/08/11/suk0qi.jpg)
 
 {% note success %}
-    深圳南电云商有限公司 - 前端开发工程师
+    南方电网人工智能有限公司(外包) - 前端开发工程师
 {% endnote %}
 
 > 2024-5 - 至今

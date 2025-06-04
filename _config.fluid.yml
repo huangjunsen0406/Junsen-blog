@@ -79,7 +79,7 @@ disqus:
 about:
   avatar: 'https://avatars.githubusercontent.com/u/66542771?v=4'
   name: "Junsen"
-  intro: "一个专科毕业的前端工程师"
+  intro: ""
   comment: bool
   icons:
 

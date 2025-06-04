@@ -56,7 +56,7 @@ jobs:
       - name: 部署到Github
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository-name: Huang-junsen/Junsen-blog
           branch: blog
           folder: public
